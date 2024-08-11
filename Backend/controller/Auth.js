@@ -68,8 +68,8 @@ exports.LoginAuthentication = async (req, res) => {
       });
     }
     //email validaions
-    const LoginValid = await Auths.findOne({ email });
-    if (AuthsValid) {
+    const checkValidationIntoInDb = await Auths.findOne({ email });
+    if (checkValidationIntoInDb) {
       return res.status(404).json({
         success: false,
         message: "email already stored ! kindly login it",
@@ -103,8 +103,8 @@ exports.LoginAuthentication = async (req, res) => {
         });
       }
       //conversion of the token
-// pending 
-
+      checkValidationIntoInDb = checkValidationIntoInDb.toObject();
+        
 
       // // cookies apply there
       //   .cookies("Authentication ", jwt)
