@@ -104,15 +104,14 @@ exports.LoginAuthentication = async (req, res) => {
       }
       //conversion of the token
       checkValidationIntoInDb = checkValidationIntoInDb.toObject();
-        
+      checkValidationIntoInDb.jwt = jwt;
+      checkValidationIntoInDb.password = undefined;
 
-      // // cookies apply there
-      //   .cookies("Authentication ", jwt)
-      //   .status(200)
-      //   .json({
-      //     success: true,
-      //     jwt,
-      //   });
+      // cookies apply there
+      const option = {
+          expiresIn : Date.now()
+      }
+      res.cookies('auths' , jwt , option)
 
       //added the cookies
     } catch (er) {}
