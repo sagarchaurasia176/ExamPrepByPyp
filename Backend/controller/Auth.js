@@ -2,6 +2,7 @@
 const bcrypt = require("bcrypt");
 const Auths = require("../model/AuthSchema");
 const jwtToken = require("jsonwebtoken");
+const { error } = require("npmlog");
 require("dotenv").config();
 //singup auth
 exports.SingupAuthentication = async (req, res) => {
@@ -55,7 +56,7 @@ exports.SingupAuthentication = async (req, res) => {
   }
 };
 
-//lgin auth
+//lgin authentication apply here !
 exports.LoginAuthentication = async (req, res) => {
   try {
     const { email, password, role } = req.body;
@@ -92,6 +93,7 @@ exports.LoginAuthentication = async (req, res) => {
         id: LoginValid._id,
         email: LoginValid.email,
       };
+      // jwt 
       const jwt = await jwtToken.sign(payload, process.env.JWT_TOKEN, {
         expiresIn: "1h",
       });
@@ -106,18 +108,33 @@ exports.LoginAuthentication = async (req, res) => {
       checkValidationIntoInDb = checkValidationIntoInDb.toObject();
       checkValidationIntoInDb.jwt = jwt;
       checkValidationIntoInDb.password = undefined;
-
       // cookies apply there
       const option = {
-          expiresIn : Date.now()
-      }
-      res.cookies('auths' , jwt , option)
-
+        expiresIn: Date.now(),
+      };
       //added the cookies
-    } catch (er) {}
+      res.cookies("auths", jwt, option);
+      //send the request to the server
+      return res.status(200).json({
+        success: true,
+        jwt,
+        checkValidationIntoInDb,
+        message: "Login Succesfully Done !",
+      });
+    } catch (er) {
+      return res.status(404).json({
+        success: false,
+        message: "Invalid Password ",
+        error: er.message,
+      });
+    }
 
-    //jwt
-    //cookies
-    //
-  } catch (er) {}
+    // catch apply here so we get!
+  } catch (er) {
+    return res.status(404).json({
+      success: false,
+      message: "Login not Succesfully Done !",
+      error: er.message,
+    });
+  }
 };
