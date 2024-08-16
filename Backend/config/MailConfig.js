@@ -14,15 +14,15 @@ const MailConfig = async (email, title, body) => {
     // mail transport
     let info = transporter.sendMail({
       from: "PYP by Sagar Chauraisa",
-      to: email, // list of receivers
-      subject: title,
+      to: `${email}`, // list of receivers
+      subject: "Hi ",
       text: "hi",
-      body: body,
+      html: "<b>your otp done</b>"
     });
-    console.log("infor from mail config", info);
-    return info;
+    console.log("infor from mail config" , info);
+    return info
   } catch (er) {
-    console.log("error at mail config", er);
+    console.log("error at mail config" , er);
   }
 };
 

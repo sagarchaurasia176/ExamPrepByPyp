@@ -48,7 +48,8 @@ exports.OtpGenerate = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Otp sent succesfully ",
-      data: createTheEntryIntoDb,
+      data:createTheEntryIntoDb,
+      otpGenerator
     });
     //stored into the otp
   } catch (er) {
