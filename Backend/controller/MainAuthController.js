@@ -30,25 +30,32 @@ exports.OtpGenerate = async (req, res) => {
       lowerCaseAlphabets: false,
       specialChars: false,
     });
-
+    console.log("Otp verify ", otpVerify);
     //check otp unique or not
     const isOtpUnique = await otp.findOne({ otp: otp });
     //otp generate if its true
     while (isOtpUnique) {
-        otpVerify = otpGenerator.generate(6, {
+      otpVerify = otpGenerator.generate(6, {
         upperCaseAlphabets: false,
         lowerCaseAlphabets: false,
         specialChars: false,
       });
       //otp again check in the db and send the response
-      return await otp.findOne({ otp: otp })
+      return await otp.findOne({ otp: otp });
     }
-
+    //create the entry into the db
+    const createTheEntryIntoDb = await otp.create({ email, otp });
+    res.status(200).json({
+      success: true,
+      message: "Otp sent succesfully ",
+      data: createTheEntryIntoDb,
+    });
     //stored into the otp
   } catch (er) {
     return res.status(400).json({
       success: false,
       message: "Failed to generate Otp ",
+      error: er.message,
     });
   }
 };
