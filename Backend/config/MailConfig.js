@@ -14,7 +14,7 @@ const MailConfig = async (email, title, body) => {
     // mail transport
     let info = transporter.sendMail({
       from: "PYP by Sagar Chauraisa",
-      to: `${email}`, // list of receivers
+      to: title, // list of receivers
       subject: "Hi ",
       text: "hi",
       html: "<b>your otp done</b>"

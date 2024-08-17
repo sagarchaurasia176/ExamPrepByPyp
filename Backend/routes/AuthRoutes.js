@@ -16,8 +16,7 @@ const routes = express.Router();
 // Login - singup Routes
 routes.post("/Singup", SingupAuthentication);
 routes.post("/login", LoginAuthentication);
-routes.post('/otp/verify' , OtpGenerate);
-
+routes.post("/otp/verify", OtpGenerate);
 
 // this is middleware for secure purpose
 routes.get("/pyp/auth/test", Authentication, (req, res) => {
