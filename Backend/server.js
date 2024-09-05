@@ -14,8 +14,10 @@ app.use(express.json());
 app.use(cookieParser());
 //listen port
 app.listen(port, () => {
-  console.log(` "sernver running at" ${port}`);
+  console.log(` "server running at" ${port}`);
 });
+
+// Db connection apply here so we get !
 dbConnection();
 // routes apply here so we get like
 app.use("/pyp", routes);

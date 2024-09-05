@@ -1,0 +1,17 @@
+{
+  "name": "pyp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "server": "cd Backend && npm run dev",
+    "frontend": "cd Frontend  && cd Frontend && npm run dev",
+    "dev": "concurrently -n \"frontend,backend\" -c \"bgGreen,bgYellow\"  \"npm run frontend\"   \"npm run server\" "
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
