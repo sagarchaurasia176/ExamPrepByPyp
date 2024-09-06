@@ -8,7 +8,10 @@ const dbConnection = require("./config/DbConnections");
 const routes = require("./routes/AuthRoutes");
 const cookieParser = require("cookie-parser");
 
+const cors = require('cors');
+
 // cors setup , // middleware
+
 app.use(express.json());
 //cookie-parser
 app.use(cookieParser());

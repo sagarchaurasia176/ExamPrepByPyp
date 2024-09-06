@@ -2,6 +2,11 @@
 const mongoose = require("mongoose");
 // mongoose schema apply here so we get
 const AuthSchema = new mongoose.Schema({
+  fullName: {
+    type: String,
+    required: true,
+  },
+
   email: {
     type: String,
     required: true,
@@ -11,14 +16,11 @@ const AuthSchema = new mongoose.Schema({
     required: true,
   },
   confirmPassword: {
-    type:String,
+    type: String,
   },
   role: {
     type: String,
     enum: ["Admin", "Student"],
-  },
-  name: {
-    type: String,
   },
 });
 
