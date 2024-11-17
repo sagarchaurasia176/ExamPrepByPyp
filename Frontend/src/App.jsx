@@ -1,4 +1,6 @@
 import "./App.css";
+import "@radix-ui/themes/styles.css";
+
 import Navbar from "./Components/Navbar";
 import Home from "./Pages/Home";
 import { Route, Routes } from "react-router-dom";
