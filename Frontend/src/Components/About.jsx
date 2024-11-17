@@ -21,6 +21,7 @@ function About() {
           className=" text-white
           font-mullish "
         >
+          {/* add the grid col for responsiveness */}
           <Grid columns={{ initial: "1", md: "2" }} gap="3" width="auto">
             <Box
               height="64px"
