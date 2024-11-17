@@ -5,7 +5,8 @@ require("dotenv").config();
 const port = process.env.PORT_NO || 8000;
 const dbConnection = require("./config/DbConnections");
 // routes import here
-const routes = require("./routes/AuthRoutes");
+// const routes = require('');
+
 const cookieParser = require("cookie-parser");
 
 const cors = require('cors');
@@ -23,7 +24,7 @@ app.listen(port, () => {
 // Db connection apply here so we get !
 dbConnection();
 // routes apply here so we get like
-app.use("/pyp", routes);
+// app.use("/pyp", routes);
 
 //send the request to the backend
 app.get("/", (req, res) => {
