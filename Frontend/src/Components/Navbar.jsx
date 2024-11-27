@@ -8,7 +8,7 @@ const Navbar = () => {
                <img src={logo} className=' w-12' alt="" />
             </div>
             <div>
-              
+    
                 {/* gogole auth provider  */}
                
             </div>

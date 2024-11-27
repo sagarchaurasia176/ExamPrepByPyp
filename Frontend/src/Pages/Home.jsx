@@ -4,6 +4,7 @@ import About from "../Components/About";
 import Shap from "./Shap";
 import InfoCard from "../Components/InfoCard";
 import Footer from "../Components/Footer";
+import { Link } from "react-router-dom";
 
 function Home() {
   return (
@@ -38,6 +39,7 @@ function Home() {
                 results.
               </b>
             </p>
+            
             <button
               className=" 
               py-[14px] px-[18px]
@@ -47,6 +49,8 @@ function Home() {
             >
               Contribute paper
             </button>
+
+            <Link to='/view/paper'>
             <button
               className="
               py-[14px] px-[18px] 
@@ -56,6 +60,8 @@ function Home() {
             >
               View paper
             </button>
+            </Link>
+     
           </div>
           {/* nxt div img */}
           <img className=" w-full max-w-[680px]" src={student} alt="" />
