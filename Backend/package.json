@@ -62,6 +62,7 @@
     "get-intrinsic": "^1.2.4",
     "glob": "^7.2.3",
     "glob-parent": "^5.1.2",
+    "googleapis": "^144.0.0",
     "gopd": "^1.0.1",
     "has-flag": "^3.0.0",
     "has-property-descriptors": "^1.0.2",

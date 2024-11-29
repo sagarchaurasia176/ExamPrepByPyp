@@ -10,6 +10,7 @@ const dbConnection = require("./config/DbConnections");
 const cookieParser = require("cookie-parser");
 
 const cors = require('cors');
+const routers = require('./routes/Filter.Routes');
 
 // cors setup , // middleware
 
@@ -21,10 +22,13 @@ app.listen(port, () => {
   console.log(` "server running at" ${port}`);
 });
 
+
 // Db connection apply here so we get !
 dbConnection();
 // routes apply here so we get like
 // app.use("/pyp", routes);
+app.use('/filter' , routers);
+
 
 //send the request to the backend
 app.get("/", (req, res) => {
