@@ -5,9 +5,9 @@ import Stream from "./button/Stream";
 
 const FilerationsPage = () => {
   return (
-    <div className="bg-slate-950 h-screen">
+    <div className="bg-slate-950   mt-[6vw]">
       {/* three options   */}
-      <div className="border-box flex flex-1  flex-wrap   justify-center flex-row  bg-slate-900 p-4 gap-12 ">
+      <div className="border-box flex flex-1  flex-wrap z-0 justify-center flex-row  bg-slate-900 p-4 gap-12 ">
         <Branch />
         <Stream/>
         <SearchFilter />
