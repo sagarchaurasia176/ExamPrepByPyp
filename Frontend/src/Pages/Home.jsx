@@ -11,7 +11,7 @@ function Home() {
     <div>
       <div
         className=" relative
-        bg-slate-950 w-auto mt-2"
+        bg-slate-950 w-auto  mt-[5vw]"
       >
         {/* one div container entire wdth */}
         <div

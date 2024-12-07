@@ -3,7 +3,7 @@ import logo from "../img/logoimg.png";
 import { Link, NavLink } from "react-router-dom";
 const Navbar = () => {
   return (
-    <div className=" justify-between flex bg-slate-950 w-full fixed top-0 left-0 z-50 text-white p-4">
+    <div className=" justify-between flex bg-slate-950 w-full fixed top-0 left-0  z-20 text-white p-4">
       <Link to='/' class="flex title-font font-medium items-center md:justify-start justify-center text-gray-900">
         <svg
           xmlns="http://www.w3.org/2000/svg"
