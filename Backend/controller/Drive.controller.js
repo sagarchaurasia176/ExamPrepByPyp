@@ -1,87 +1,114 @@
-const { error } = require("npmlog");
-const AuthenticateWithGoogleDrive = require("../config/Drive.config");
-const crediential = require("../config/secret.json");
+const fs = require("fs").promises;
+const path = require("path");
+const process = require("process");
+const { authenticate } = require("@google-cloud/local-auth");
 const { google } = require("googleapis");
+const { message } = require("statuses");
+const { error } = require("console");
 
-// Configurations
-const clientId = process.env.CLIENT_ID;
-const clientSecret = process.env.CLIENT_SECRET;
-const redirectUri = process.env.REDIRECT_URI;
-
-// scopes
-const SCOPES = ["https://www.googleapis.com/auth/drive.file"];
-//List of files from google Drive
-const listOfFilesFromGoogleDrive = async (req, res) => {
+// If modifying these scopes, delete token.json.
+const SCOPES = ["https://www.googleapis.com/auth/drive"];
+// The file token.json stores the user's access and refresh tokens, and is
+// created automatically when the authorization flow completes for the first
+// time.
+const CREDENTIALS_PATH = path.join(process.cwd(), "secre.json");
+const TOKEN_PATH = path.join(process.cwd(), "token.json");
+/**
+ * Reads previously authorized credentials from the save file.
+ *
+ *
+ * @return {Promise<OAuth2Client|null>}
+ */
+async function loadSavedCredentialsIfExist() {
   try {
-    const response = await drive.files.list({
-      // pageSize: 1, // Set the desired number of files to retrieve
-      fields: "abcPass.png", // Specify the fields to include in the response
-    });
-    const files = response.data.files;
-    console.log("drive response");
-    console.log(files);
+    const content = await fs.readFile(TOKEN_PATH);
+    const credentials = JSON.parse(content);
+    return google.auth.fromJSON(credentials);
+  } catch (err) {
+    return null;
+  }
+}
 
-    res.json(files);
-  } catch (er) {
-    return res.status(404).json({
-      success: false,
-      message: "Drive contmrooler not work , Data not fetch",
-      error: er.message,
+/**
+ * Serializes credentials to a file compatible with GoogleAuth.fromJSON.
+ *
+ * @param {OAuth2Client} client
+ * @return {Promise<void>}
+ */
+async function saveCredentials(client) {
+  const content = await fs.readFile(CREDENTIALS_PATH);
+  const keys = JSON.parse(content);
+  console.log("key");
+  console.log(keys);
+  const key = keys.installed || keys.web;
+  try{
+    const payload = JSON.stringify({
+      type: "authorized_user",
+      client_id: key.client_id,
+      client_secret: key.client_secret,
     });
+    console.log(payload)
+    await fs.writeFile(TOKEN_PATH, payload);
+  }catch(er){
+    console.log(er);
+    
   }
-};
+  
 
-// Auth controller
-const AuthUrlController = async (req, res) => {
-  try {
-    // code
-    const oauthClient = new google.auth.OAuth2(
-      clientId,
-      clientSecret,
-      redirectUri
-    );
-    // Generate the authentication URL
-    const authUrl = oauthClient.generateAuthUrl({
-      // 'online' (default) or 'offline' (gets refresh_token)
-      access_type: "offline",
-      /** Pass in the scopes array defined above.
-       * Alternatively, if only one scope is needed, you can pass a scope URL as a string */
-      scope: SCOPES,
-      // Enable incremental authorization. Recommended as a best practice.
-      include_granted_scopes: true,
-    });
-    console.log("auth url")
-    console.log(authUrl);
-  } catch (er) {
-    console.error("Error authenticating:", error);
-    res.status(500).send("Authentication failed at url.");
-  }
-};
+}
 
-// AuthCallBacks
-const AuthCallback = async (req, res) => {
-  const code = req.query.code;
-  if (!code) {
-    return res.status(400).send("Authorization code not provided.");
+/**
+ * Load or request or authorization to call APIs.
+ *
+ */
+async function authorize() {
+  let client = await loadSavedCredentialsIfExist();
+  if (client) {
+    return client;
   }
-  try {
-    // Exchange the authorization code for access and refresh tokens
-    const { tokens } = await oauthClient.getToken(code);
-    const accessToken = tokens.access_token;
-    const refreshToken = tokens.refresh_token;
-    oauthClient.setCredentials({
-      refresh_token: refreshToken,
-      access_token: accessToken,
+  client = await authenticate({
+    scopes: SCOPES,
+    keyfilePath: CREDENTIALS_PATH,
+  });
+  if (client.credentials) {
+    await saveCredentials(client);
+    res.json({
+      message: "authorized succesfully",
+      success: true,
     });
-    res.send("Authentication successful!");
-  } catch (er) {
-    console.error("Error authenticating:", error);
-    res.status(500).send("Authentication failed.");
   }
-};
+  return client;
+}
+// "redirect_uris": ["https://developers.google.com/oauthplayground"]
+
+/**
+ * Lists the names and IDs of up to 10 files.
+**/
+
+async function listFiles(authClient) {
+  const drive = google.drive({ version: "v3", auth: authClient });
+  console.log(drive)
+  const res = await drive.files.list({
+    pageSize: 10,
+    fields: "nextPageToken, files(id, name)",
+  });
+  console.log(res.data.files);
+
+  const files = res.data.files;
+  if (files.length === 0) {
+    console.log("No files found.");
+    return;
+  }
+  console.log("Files:");
+  files.map((file) => {
+    console.log(`${file.name} (${file.id})`);
+    
+  });
+}
 
 module.exports = {
-  listOfFilesFromGoogleDrive,
-  AuthCallback,
-  AuthUrlController
+  listFiles,
+  authorize,
+  saveCredentials,
+  loadSavedCredentialsIfExist,
 };
