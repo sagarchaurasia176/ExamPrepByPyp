@@ -7,7 +7,7 @@ const { message } = require("statuses");
 const { error } = require("console");
 
 // If modifying these scopes, delete token.json.
-const SCOPES = ["https://www.googleapis.com/auth/drive"];
+const SCOPES = ["https://www.googleapis.com/auth/drive.file"];
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
@@ -69,6 +69,8 @@ async function authorize() {
   client = await authenticate({
     scopes: SCOPES,
     keyfilePath: CREDENTIALS_PATH,
+
+    
   });
   if (client.credentials) {
     await saveCredentials(client);
@@ -79,17 +81,13 @@ async function authorize() {
   }
   return client;
 }
-// "redirect_uris": ["https://developers.google.com/oauthplayground"]
 
-/**
- * Lists the names and IDs of up to 10 files.
-**/
 
 async function listFiles(authClient) {
   const drive = google.drive({ version: "v3", auth: authClient });
   console.log(drive)
   const res = await drive.files.list({
-    pageSize: 10,
+    pageSize: 1,
     fields: "nextPageToken, files(id, name)",
   });
   console.log(res.data.files);
