@@ -1,30 +1,38 @@
 import React from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
+import Automata from '../DummyPaper/AutomataTheory.pdf';
+import Business from '../DummyPaper/BusinessCommunication.pdf'; 
+import Dbms from '../DummyPaper/Dbms.pdf';
+import one from '../DummyPaper/one.png';
+import two from '../DummyPaper/two.png';
+import three from '../DummyPaper/three.png';
+
+
 
 // Configure PDF worker
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 const SamplePaper = () => {
-  
+
   const samplePapers = [
     {
       id: 1,
       title: "Computer Science - Semester 4 (2023)",
-      pdfUrl: "/DummyPaper/AutomataTheory.pdf",
-      thumbnail: "/DummyPaper/one.png"
+      pdfUrl: Automata,
+      thumbnail: one
     },
     {
       id: 2,
       title: "Computer Science with AIML - Semester 3 (2022)",
-      pdfUrl: "/DummyPaper/BusinessCommunication.pdf",
-      thumbnail: "/DummyPaper/two.png"
+      pdfUrl: Business,
+      thumbnail: two
     },
     {
       id: 3,
       title: "Electrical Engineering - Semester 5 (2023)",
-      pdfUrl: "/DummyPaper/Dbms.pdf",
-      thumbnail: "/DummyPaper/three.png"
+      pdfUrl: Dbms,
+      thumbnail: three
     }
   ];
 
