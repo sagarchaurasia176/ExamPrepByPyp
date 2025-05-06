@@ -1,137 +1,60 @@
 import React from "react";
-import { Theme } from "@radix-ui/themes";
-import { Grid } from "@radix-ui/themes";
-import { Box } from "@radix-ui/themes";
-import remvimg from "../img/remimg.png";
-import pdf from "../img/pdf.png";
-import { Flex } from "@radix-ui/themes";
-import { Text } from "@radix-ui/themes";
-import { Card } from "@radix-ui/themes";
-import Typedjs from "../lib/Typedjs";
+import founder from "../../public/founder.png"; // Add your image in the img folder
 
-
-function About() {
+const About = () => {
   return (
-    <div>
-      <div
-        className="
-          items-center  h-auto  mx-auto"
-      >
-        <Theme
-          className=" text-white
-          font-mullish "
-        >
-          {/* add the grid col for responsiveness */}
-          <Grid columns={{ initial: "1", md: "2" }} gap="3" width="auto">
-            <Box
-              height="64px"
-              className= ""
-            >
-              {/* card with marqureee tool */}
-              <Box maxWidth="350px">
-                {/* <Blockquote size="2"> */}
-                  <marquee behavior="slide" scrolldelay="30" direction="up">
-                    <Box maxWidth="40px">
-                      <Card className=" cursor-pointer hover:bg-slate-100 transition-all animate-pulse ">
-                        <Flex gap="3" align="center">
-                          <img className=" w-9" src={pdf} alt="" />
-                          <Box>
-                            <Text as="div" size="2" weight="bold">
-                              BTECH CSE
-                            </Text>
-                            <Text as="div" size="2" color="gray">
-                              QUESTION PAPER
-                            </Text>
-                          </Box>
-                        </Flex>
-                      </Card>
-                    </Box>
-                    <br></br>
+    <div className=" text-white py-12 md:py-16">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col md:flex-row items-center gap-10 md:gap-16">
+          {/* Image Section */}
+          <div className="flex-1">
+            <img
+              src={founder}
+              alt="Study illustration"
+              className="w-full rounded-xl shadow-lg transform hover:scale-105 transition duration-500"
+            />
+          </div>
 
-                    <Box maxWidth="40px">
-                      <Card className=" cursor-pointer hover:bg-slate-100 transition-all animate-pulse ">
-                        <Flex gap="3" align="center">
-                          <img className=" w-9" src={pdf} alt="" />
-                          <Box>
-                            <Text as="div" size="2" weight="bold">
-                              BTECH AI|ML
-                            </Text>
-                            <Text as="div" size="2" color="gray">
-                              QUESTION PAPER
-                            </Text>
-                          </Box>
-                        </Flex>
-                      </Card>
-                    </Box>
+          {/* Text Section */}
+          <div className="flex-1 space-y-6">
+            <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-green-300 to-blue-400 bg-clip-text text-transparent">
+              About PYP | Exam_Prep
+            </h2>
+            <div className="w-16 h-1 bg-green-300 mb-4"></div>
+            
+            <p className="text-lg opacity-90 leading-7">
+              <b>PYP | Exam_Prep</b> was born from our own struggles as engineering students at CASE. 
+              We're <span className="text-green-300">Sagar and Ankit</span>, two B.Tech students who 
+              know firsthand how challenging it can be to find quality study materials.
+            </p>
+            
+            <p className="text-lg opacity-90 leading-7">
+              During our exam preparations, we noticed how previous year papers made the difference between 
+              <span className="font-bold"> memorizing</span> and truly <span className="font-bold">understanding</span> concepts. 
+              Yet, these papers were scattered across different platforms, often incomplete or poorly organized.
+            </p>
+            
+            <p className="text-lg opacity-90 leading-7">
+              We built this platform to:
+              <ul className="list-disc pl-5 mt-2 space-y-2">
+                <li>Centralize all previous year papers in one accessible place</li>
+                <li>Save students countless hours of searching</li>
+                <li>Help identify recurring question patterns</li>
+                <li>Provide a realistic simulation of actual exams</li>
+              </ul>
+            </p>
 
-                    <br></br>
-                    <Box maxWidth="40px">
-                      <Card className=" cursor-pointer hover:bg-slate-100 transition-all animate-pulse ">
-                        <Flex gap="3" align="center">
-                          <img className=" w-9" src={pdf} alt="" />
-                          <Box>
-                            <Text as="div" size="2" weight="bold">
-                              BTECH DS
-                            </Text>
-                            <Text as="div" size="2" color="gray">
-                              QUESTION PAPER
-                            </Text>
-                          </Box>
-                        </Flex>
-                      </Card>
-                    </Box>
-
-                    <br></br>
-                    <Box maxWidth="40px">
-                      <Card className=" cursor-pointer hover:bg-slate-100 transition-all animate-pulse ">
-                        <Flex gap="3" align="center">
-                          <img className=" w-9" src={pdf} alt="" />
-                          <Box>
-                            <Text as="div" size="2" weight="bold">
-                              BTECH IOT
-                            </Text>
-                            <Text as="div" size="2" color="gray">
-                              QUESTION PAPER
-                            </Text>
-                          </Box>
-                        </Flex>
-                      </Card>
-                    </Box>
-
-                    <br></br>
-                    <Box maxWidth="40px">
-                      <Card className=" cursor-pointer hover:bg-slate-100 transition-all animate-pulse ">
-                        <Flex gap="3" align="center">
-                          <img className=" w-9" src={pdf} alt="" />
-                          <Box>
-                            <Text as="div" size="2" weight="bold">
-                              BTECH BUSINESS
-                            </Text>
-                            <Text as="div" size="2" color="gray">
-                              QUESTION PAPER
-                            </Text>
-                          </Box>
-                        </Flex>
-                      </Card>
-                    </Box>
-                  </marquee>
-                {/* </Blockquote> */}
-              </Box>
-            </Box>
-            <Box height="64px" className="  rounded-xl bg-orange-500">
-        <h3
-         className=" translate-x-8 transition-all  animate-pulse text-white  p-2 m-auto text-2xl  font-semibold"
-         >
-          <Typedjs/>
-        </h3>
-                <img src={remvimg} alt="" />
-
-            </Box>
-          </Grid>
-        </Theme>
+            
+            <div className="pt-4">
+              <p className="text-green-300 font-medium">
+                "We're building the study tool we needed - and we hope it helps you as much as it's helping us."
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
-}
+};
 
 export default About;
