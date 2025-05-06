@@ -5,12 +5,13 @@ import Stream from "./button/Stream";
 
 const FilerationsPage = () => {
   return (
-    <div className="bg-slate-950   mt-[6vw]">
+    <div className=" bg-slate-950  min-h-screen  w-full flex flex-col justify-center items-center">
       {/* three options   */}
-      <div className="border-box flex flex-1  flex-wrap z-0 justify-center flex-row  bg-slate-900 p-4 gap-12 ">
-        <Branch />
+      <h1 className=" text-8xl  justify-center flex">comming soon</h1>
+      <div className="">
+        {/* <Branch />
         <Stream/>
-        <SearchFilter />
+        <SearchFilter /> */}
       </div>
       {/* filteration btn  */}
       {/* select couse */}

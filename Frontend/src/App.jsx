@@ -9,8 +9,8 @@ import About from "./Components/About";
 function App() {
   return (
     <>
-      <div className=" bg-slate-950 w-full">
-    <Navbar/>
+      <div className="  sticky top-0 left-0 z-50 backdrop-blur-md ">
+       <Navbar/>
       </div>
       {/* routes part */}
       <Routes>

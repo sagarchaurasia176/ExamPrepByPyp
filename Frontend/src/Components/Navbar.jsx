@@ -4,7 +4,7 @@ import logo from "../img/logoimg.png";
 
 const Navbar = () => {
   return (
-    <div className="sticky top-0 left-0 w-full z-50 backdrop-blur-md bg-slate-950/70 p-4">
+    <div className=" bg-slate-950/70 p-4">
       <div className="max-w-[1080px] mx-auto flex justify-center lg:flex lg:justify-start md:flex md:justify-start">
         <Link
           to="/"
