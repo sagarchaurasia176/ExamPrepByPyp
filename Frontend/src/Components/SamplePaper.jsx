@@ -10,20 +10,20 @@ const SamplePaper = () => {
     {
       id: 1,
       title: "Computer Science - Semester 4 (2023)",
-      pdfUrl: "./public/DummyPaper/AutomataTheory.pdf",
-      thumbnail: "./public/DummyPaper/one.png"
+      pdfUrl: "./DummyPaper/AutomataTheory.pdf",
+      thumbnail: "./DummyPaper/one.png"
     },
     {
       id: 2,
       title: "Computer Science with AIML - Semester 3 (2022)",
-      pdfUrl: "./public/DummyPaper/BusinessCommunication.pdf",
-      thumbnail: "./public/DummyPaper/two.png"
+      pdfUrl: "./DummyPaper/BusinessCommunication.pdf",
+      thumbnail: "./DummyPaper/two.png"
     },
     {
       id: 3,
       title: "Electrical Engineering - Semester 5 (2023)",
-      pdfUrl: "./public/DummyPaper/Dbms.pdf",
-      thumbnail: "./public/DummyPaper/three.png"
+      pdfUrl: "./DummyPaper/Dbms.pdf",
+      thumbnail: "./DummyPaper/three.png"
     }
   ];
 
