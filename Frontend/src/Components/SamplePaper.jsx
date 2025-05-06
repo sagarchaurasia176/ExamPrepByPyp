@@ -6,26 +6,29 @@ import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 const SamplePaper = () => {
+  
   const samplePapers = [
     {
       id: 1,
       title: "Computer Science - Semester 4 (2023)",
-      pdfUrl: "./dist/DummyPaper/AutomataTheory.pdf",
-      thumbnail: "./dist/DummyPaper/one.png"
+      pdfUrl: "/DummyPaper/AutomataTheory.pdf",
+      thumbnail: "/DummyPaper/one.png"
     },
     {
       id: 2,
       title: "Computer Science with AIML - Semester 3 (2022)",
-      pdfUrl: "./dist/DummyPaper/BusinessCommunication.pdf",
-      thumbnail: "./dist/DummyPaper/two.png"
+      pdfUrl: "/DummyPaper/BusinessCommunication.pdf",
+      thumbnail: "/DummyPaper/two.png"
     },
     {
       id: 3,
       title: "Electrical Engineering - Semester 5 (2023)",
-      pdfUrl: "./dist/DummyPaper/Dbms.pdf",
-      thumbnail: "./dist/DummyPaper/three.png"
+      pdfUrl: "/DummyPaper/Dbms.pdf",
+      thumbnail: "/DummyPaper/three.png"
     }
   ];
+
+  
   return (
     <div className="bg-slate-900 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
