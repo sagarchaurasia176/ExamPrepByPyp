@@ -1,25 +1,31 @@
-import "./App.css";
-import "@radix-ui/themes/styles.css";
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navbar from './Components/Navbar';
+import AuthSuccess from './Components/AuthSuccess';
+import ProtectedRoute from './Components/ProtectedRoutes';
+import Papers from './Components/SamplePaper';
+import Home from './Pages/Home';
+import './App.css'
+import UniversityPaper from './core/ViewPaper';
 
-import Navbar from "./Components/Navbar";
-import Home from "./Pages/Home";
-import { Route, Routes } from "react-router-dom";
-import ViewPaper from "./core/ViewPaper";
-import About from "./Components/About";
 function App() {
   return (
-    <>
-      <div className="  sticky top-0 left-0 z-50 backdrop-blur-md ">
-       <Navbar/>
-      </div>
-      {/* routes part */}
-      <Routes>
-        <Route path="/" element={<Home />}></Route>
-        {/* about */}
-        {/* view paper */}
-        <Route path="/view/paper" element={<ViewPaper/>}></Route>
-      </Routes>
+    <>    
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/auth/success" element={<AuthSuccess />} />
+          <Route 
+            path="/papers" 
+            element={
+              <ProtectedRoute>
+               <UniversityPaper/>
+              </ProtectedRoute>
+            } 
+          />      
+        </Routes>
     </>
+
   );
 }
 

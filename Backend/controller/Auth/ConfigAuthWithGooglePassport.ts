@@ -1,72 +1,59 @@
+// Passport configuration for Google OAuth
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-import { GoogleAuthenticationWithPassport } from "../../schema/Auth.Schema";
-import { Document } from "mongoose";
+import dotenv from "dotenv";
+import { UserModel } from "../../schema/Auth.Schema"; // Adjust path as needed
 
-// Define interface for our user type to match Passport's expectations
-interface UserDocument extends Document {
-  _id: string;
-  GoogelId: string;
-  DisplayName: string;
-  Email: string;
-  Photo?: string;
-}
-
-// Extend the Express Request type to include our user
-declare global {
-  namespace Express {
-    interface User extends UserDocument {}
-  }
-}
+dotenv.config();
 
 export const PassportConfguration = () => {
+  // Serialize user info to store in session
+  passport.serializeUser((user: any, done) => {
+    done(null, user.id);
+  });
+
+  // Deserialize user from session
+  passport.deserializeUser(async (id: string, done) => {
+    try {
+      const user = await UserModel.findById(id);
+      done(null, user);
+    } catch (error) {
+      done(error, null);
+    }
+  });
+
+  // Configure Google Strategy
   passport.use(
     new GoogleStrategy(
       {
         clientID: process.env.GOOGLE_CLIENT_ID!,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+        clientSecret:"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",
         callbackURL: "http://localhost:5000/auths/auth/google/callback",
+        // Make sure this matches the route in your auth.routes.ts
+        // The full URL will be: http://yourbackend.com/auths/auth/google/callback
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
-          // Find or create user
-          let user = await GoogleAuthenticationWithPassport.findOne({
-            GoogelId: profile.id,
-          });
-
-          // Check if user already exists in the database
+          // Check if user already exists
+          let user = await UserModel.findOne({ googleId: profile.id });
+          
           if (!user) {
-            user = await GoogleAuthenticationWithPassport.create({
-              GoogelId: profile.id,
-              DisplayName: profile.displayName,
-              Email: profile.emails?.[0]?.value || "",
-              Photo: profile.photos?.[0]?.value,
+            // Create new user if doesn't exist
+            user = await UserModel.create({
+              googleId: profile.id,
+              email: profile.emails?.[0]?.value,
+              displayName: profile.displayName,
+              firstName: profile.name?.givenName,
+              lastName: profile.name?.familyName,
+              avatar: profile.photos?.[0]?.value,
             });
           }
           
-          // Cast the user document to our UserDocument type
-          return done(null, user as UserDocument);
-        } catch (err) {
-          console.error("Error in Google authentication", err);
-          return done(err as Error, undefined);
+          return done(null, user);
+        } catch (error) {
+          return done(error as Error, undefined);
         }
       }
     )
   );
-
-  // Serialize user
-  passport.serializeUser((user, done) => {
-    done(null, user._id);
-  });
-
-  // Deserialize user
-  passport.deserializeUser(async (id: string, done) => {
-    try {
-      const user = await GoogleAuthenticationWithPassport.findById(id);
-      done(null, user as UserDocument);
-    } catch (err) {
-      console.error("Error in deserializing user", err);
-      done(err as Error, null);
-    }
-  });
 };

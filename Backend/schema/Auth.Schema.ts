@@ -1,40 +1,44 @@
+// User Model for MongoDB
 import mongoose, { Schema, Document } from "mongoose";
 
-// Interface for Google Authentication User
-export interface IGoogleUser extends Document {
-  GoogelId: string;
-  DisplayName: string;
-  Email: string;
-  Photo?: string;
+export interface IUser extends Document {
+  googleId: string;
+  email: string;
+  displayName: string;
+  firstName?: string;
+  lastName?: string;
+  avatar?: string;
   createdAt: Date;
-  updatedAt: Date;
 }
 
-// Schema for Google Authentication with Passport
-const GoogleAuthSchema = new Schema(
-  {
-    GoogelId: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    DisplayName: {
-      type: String,
-      required: true,
-    },
-    Email: {
-      type: String,
-      required: true,
-    },
-    Photo: {
-      type: String,
-    },
+const UserSchema: Schema = new Schema({
+  googleId: { 
+    type: String, 
+    required: true, 
+    unique: true 
   },
-  { timestamps: true }
-);
+  email: { 
+    type: String, 
+    required: true, 
+    unique: true 
+  },
+  displayName: { 
+    type: String, 
+    required: true 
+  },
+  firstName: { 
+    type: String 
+  },
+  lastName: { 
+    type: String 
+  },
+  avatar: { 
+    type: String 
+  },
+  createdAt: { 
+    type: Date, 
+    default: Date.now 
+  }
+});
 
-// Model for Google Authentication with Passport
-export const GoogleAuthenticationWithPassport = mongoose.model<IGoogleUser>(
-  "GoogleAuth",
-  GoogleAuthSchema
-);
+export const UserModel = mongoose.model<IUser>("User", UserSchema);
