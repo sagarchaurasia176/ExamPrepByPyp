@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Apply CORS middleware properly
 app.use(cors({
-    origin: "*",
+    origin: ["https://pyp.dev-saga.in" ,"*"], // Replace with your frontend URL
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
 }));
