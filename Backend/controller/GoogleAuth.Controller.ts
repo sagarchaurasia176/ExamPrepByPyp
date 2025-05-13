@@ -11,7 +11,7 @@ export const googleLogin = (req: Request, res: Response , next:NextFunction) => 
 // Callback function for Google authentication
 export const googleCallback = (req: Request, res: Response) => {
   console.log("Google authentication callback");
-  const frontendUrl = "http://localhost:5173"; // problem resolved 
+  const frontendUrl = "https://pyp.dev-saga.in"; // problem resolved 
   res.redirect(`${frontendUrl}/auth/success`);
 }
 
