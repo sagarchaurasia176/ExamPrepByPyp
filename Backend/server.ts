@@ -17,10 +17,13 @@ const port = process.env.PORT || 3000;
 // Apply middleware in the correct order
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
+
+// Use cookie-parser middleware to parse cookies
+app.use(cookieParser()); 
+
 // Apply CORS middleware properly
 app.use(cors({
-      origin: "http://localhost:5173", // Replace with your frontend URL
+      origin: [process.env.FRONTEND_URL || "http://localhost:5173" ], // Replace with your frontend URL
       credentials: true, // Required for cookies/sessions
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization']
