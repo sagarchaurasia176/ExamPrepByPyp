@@ -36,11 +36,11 @@ app.use(cors({
 app.use(session({
   name: 'connect.sid',
   secret: 'zyafafafnafafnalfa',
-  resave: false,
-  saveUninitialized: false,
+  resave: true,
+  saveUninitialized: true,
   cookie: {
     httpOnly: true,
-    secure: false, // true if you're using HTTPS
+    secure: true, // true if you're using HTTPS
     sameSite: 'lax', // or 'none' with secure: true
     maxAge: 1000 * 60 * 60 * 24 // 1 day
   }
