@@ -23,7 +23,7 @@ app.use(cookieParser());
 
 // Apply CORS middleware properly
 app.use(cors({
-      origin: [process.env.FRONTEND_URL || "http://localhost:5173" ], // Replace with your frontend URL
+      origin: ["https://pyp.dev-saga.in" , "http://localhost:5173" ], // Replace with your frontend URL
       credentials: true, // Required for cookies/sessions
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization']
