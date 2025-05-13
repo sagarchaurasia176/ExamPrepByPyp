@@ -61,7 +61,7 @@ const SamplePaper = () => {
                   <Document
                     file={paper.pdfUrl}
                     loading={<div className="h-64 bg-slate-700 animate-pulse"></div>}
-                    error={<div className="h-64 bg-red-900/20 flex items-center justify-center text-red-400">Failed to load PDF</div>}
+                    error={<div className="h-64 bg-red-900/20 flex items-center justify-center"></div>}
                   >
                     <Page 
                       pageNumber={1} 

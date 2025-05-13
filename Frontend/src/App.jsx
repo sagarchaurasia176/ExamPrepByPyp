@@ -7,6 +7,7 @@ import Papers from './Components/SamplePaper';
 import Home from './Pages/Home';
 import './App.css'
 import UniversityPaper from './core/ViewPaper';
+import AuthCallback from './Components/AuthCallback';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/auth/success" element={<AuthSuccess />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
           <Route 
             path="/papers" 
             element={
