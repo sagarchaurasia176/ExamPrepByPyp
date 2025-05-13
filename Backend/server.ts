@@ -7,6 +7,7 @@ import passport from "passport";
 import { MonogoDbConnection } from "./config/Dbconfig";
 import { PassportConfguration } from './controller/Auth/ConfigAuthWithGooglePassport';
 import router from "./routes/auth.routes";
+import cookieParser from 'cookie-parser';
 
 dotenv.config();
 
@@ -16,26 +17,31 @@ const port = process.env.PORT || 3000;
 // Apply middleware in the correct order
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+app.use(cookieParser());
 // Apply CORS middleware properly
 app.use(cors({
-    origin: ["https://pyp.dev-saga.in" ,"*"], // Replace with your frontend URL
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+      origin: "http://localhost:5173", // Replace with your frontend URL
+      credentials: true, // Required for cookies/sessions
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // Session middleware must come BEFORE passport
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET || "123453121", // You should use an environment variable
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
-      secure: process.env.NODE_ENV === "production"
-    }
-  })
-);
+// Initialize session middleware 
+// Use express-session for session management
+
+app.use(session({
+  name: 'connect.sid',
+  secret: 'zyafafafnafafnalfa',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    secure: false, // true if you're using HTTPS
+    sameSite: 'lax', // or 'none' with secure: true
+    maxAge: 1000 * 60 * 60 * 24 // 1 day
+  }
+}));
 
 // Initialize passport after session
 app.use(passport.initialize());
