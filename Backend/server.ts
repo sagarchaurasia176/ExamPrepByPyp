@@ -18,34 +18,31 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Use cookie-parser middleware to parse cookies
+
 app.use(cookieParser()); 
 
 // Apply CORS middleware properly
 app.use(cors({
-      origin: ["https://pyp.dev-saga.in" , "http://localhost:5173" ], // Replace with your frontend URL
+      origin:"https://pyp.dev-saga.in", // Replace with your frontend URL
       credentials: true, // Required for cookies/sessions
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization']
 }));
-
 // Session middleware must come BEFORE passport
 // Initialize session middleware 
 // Use express-session for session management
-
 app.use(session({
   name: 'connect.sid',
   secret: 'zyafafafnafafnalfa',
-  resave: true,
-  saveUninitialized: true,
+  resave: false,
+  saveUninitialized: false,
   cookie: {
-    httpOnly: true,
+    httpOnly: true, // Prevent client-side JavaScript from accessing the cookie
     secure: true, // true if you're using HTTPS
-    sameSite: 'lax', // or 'none' with secure: true
+    sameSite: 'none', // or 'none' with secure: true
     maxAge: 1000 * 60 * 60 * 24 // 1 day
   }
 }));
-
 // Initialize passport after session
 app.use(passport.initialize());
 app.use(passport.session());
