@@ -17,6 +17,10 @@ export const UserProvider = ({ children }) => {
     const initializeAuth = async () => {
       try {
         const storedUser = cookies.get('connect.sid') || localStorage.getItem('userData');
+        console.log("cookies");
+        console.log(storedUser);
+        
+        
         if (storedUser) {
           const parsedUser = JSON.parse(storedUser);
           setUser(parsedUser);
@@ -37,7 +41,10 @@ export const UserProvider = ({ children }) => {
       const response = await axios.get(`${API_URL}/auths/profile`, {
         withCredentials: true,
       });
+      console.log("auths/profile");
+      console.log(response);
       
+
       if (response.data.success) {
         const userData = response.data.user;
         setUser(userData);
