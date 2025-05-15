@@ -26,7 +26,6 @@ function AuthCallback() {
           
           // Navigate to the stored redirect path or default to home
           const redirectPath = localStorage.getItem('redirectAfterLogin') || '/';
-          localStorage.removeItem('redirectAfterLogin'); // Clean up
           navigate(redirectPath);
         } else {
           console.error("Auth callback: No success in response");
