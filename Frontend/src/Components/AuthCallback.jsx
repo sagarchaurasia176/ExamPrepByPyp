@@ -8,7 +8,7 @@ function AuthCallback() {
   const navigate = useNavigate();
   
   // API URL from environment or use default
-  const API_URL = "http://localhost:5000";
+  const API_URL =import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
     const fetchUserData = async () => {
