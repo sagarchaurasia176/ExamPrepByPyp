@@ -16,12 +16,12 @@ const port = process.env.PORT || 3000;
 // Apply middleware in the correct order
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser()); 
+app.use(cookieParser());
 
 // Dynamic CORS configuration based on environment
-const allowedOrigins = "https://pyp.dev-saga.in"
+
 app.use(cors({
-  origin:allowedOrigins,
+  origin: [process.env.FRONTEND_URL ? process.env.FRONTEND_URL : "http://localhost:5173"],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -36,7 +36,7 @@ app.use(session({
   cookie: {
     httpOnly: true,
     // Only use 'secure: true' in production with HTTPS
-    secure: true,
+    secure:true,
     // SameSite configuration appropriate for the environment
     sameSite:'none',
     maxAge: 1000 * 60 * 60 * 24 // 1 day
@@ -64,10 +64,8 @@ app.get("/", (req: Request, res: Response) => {
     <a href="/auths/auth/google">Login with Google</a>
   `);
 });
-
 // Apply routes
 app.use("/auths", router);
-
 // Add a catch-all route for debugging
 app.use((req: Request, res: Response) => {
   res.status(404).json({
@@ -77,7 +75,6 @@ app.use((req: Request, res: Response) => {
     origin: req.headers.origin
   });
 });
-
 // Connect to MongoDB and start server
 app.listen(port, async () => {
   try {
@@ -85,5 +82,5 @@ app.listen(port, async () => {
     console.log("Connected to MongoDB");
   } catch (err) {
     console.log("Error in connecting to MongoDB", err);
-  }  
+  }
 });
