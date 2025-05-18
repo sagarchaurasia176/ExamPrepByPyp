@@ -30,8 +30,6 @@ export const PassportConfguration = () => {
         clientID: process.env.GOOGLE_CLIENT_ID!,
         clientSecret:process.env.CLIENTSECRET!,
         callbackURL:process.env.CALLBACKURL!,
-        // Make sure this matches the route in your auth.routes.ts
-        // The full URL will be: http://yourbackend.com/auths/auth/google/callback
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
