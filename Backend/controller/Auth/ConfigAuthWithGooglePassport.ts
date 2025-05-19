@@ -27,10 +27,12 @@ export const PassportConfguration = () => {
   passport.use(
     new GoogleStrategy(
       {
-        clientID: process.env.GOOGLE_CLIENT_ID!,
-        clientSecret:process.env.CLIENTSECRET!,
-        callbackURL:process.env.CALLBACKURL!,
+        clientID:process.env.GOOGLE_CLIENT_ID as string,
+        clientSecret:process.env.GOOGLE_CLIENT_SECRET as string,
+        callbackURL:process.env.GOOGLE_CALLBACK_URL as string,
       },
+      
+      // Callback function to handle the response from Goog
       async (accessToken, refreshToken, profile, done) => {
         try {
           // Check if user already exists

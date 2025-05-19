@@ -8,6 +8,7 @@ import { MonogoDbConnection } from "./config/Dbconfig";
 import { PassportConfguration } from './controller/Auth/ConfigAuthWithGooglePassport';
 import router from "./routes/auth.routes";
 import cookieParser from 'cookie-parser';
+import { log } from "console";
 
 dotenv.config();
 const app = express();
@@ -21,7 +22,7 @@ app.use(cookieParser());
 // Dynamic CORS configuration based on environment
 
 app.use(cors({
-  origin: [process.env.FRONTEND_URL ? "http://localhost:5173" : process.env.FRONTEND_URL!],
+  origin:process.env.FRONTEND_URL,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -36,9 +37,9 @@ app.use(session({
   cookie: {
     httpOnly: true,
     // Only use 'secure: true' in production with HTTPS
-    secure:true,
+    secure:false,
     // SameSite configuration appropriate for the environment
-    sameSite:'none',
+    sameSite:'lax', // when it goes to to deployment convert to site
     maxAge: 1000 * 60 * 60 * 24 // 1 day
   }
 }));
@@ -59,9 +60,8 @@ app.use((req, res, next) => {
 // Home route
 app.get("/", (req: Request, res: Response) => {
   res.send(`
-    <h1>Authentication Test</h1>
+    <h1>Welcome to the PYP Backend</h1>
     <p>Server is running successfully</p>
-    <a href="/auths/auth/google">Login with Google</a>
   `);
 });
 // Apply routes
@@ -80,6 +80,7 @@ app.listen(port, async () => {
   try {
     await MonogoDbConnection(process.env.MONGO_DB_URI!);
     console.log("Connected to MongoDB");
+    console.log(`Server is running on port ${port}`);
   } catch (err) {
     console.log("Error in connecting to MongoDB", err);
   }
