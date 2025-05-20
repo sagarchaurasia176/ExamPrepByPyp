@@ -1,3 +1,4 @@
+// Import necessary modules
 import cors from "cors";
 import express from "express";
 import dotenv from "dotenv";
@@ -5,83 +6,35 @@ import { Request, Response } from "express";
 import session from "express-session";
 import passport from "passport";
 import { MonogoDbConnection } from "./config/Dbconfig";
-import { PassportConfguration } from './controller/Auth/ConfigAuthWithGooglePassport';
 import router from "./routes/auth.routes";
 import cookieParser from 'cookie-parser';
 import { log } from "console";
-
+import { PassportConfguration } from "./config/ConfigAuthWithGooglePassport";
+import { RouteDebugger } from "./handlers/RouteHandler";
+import { ListenPort } from "./handlers/ListenPort";
+import { passportSession } from "./handlers/Session";
+import { MiddlewareDebugger } from "./handlers/DebugMiddleware";
+import { HomeRoute } from "./handlers/HomeRoute";
 dotenv.config();
+const PORT = process.env.PORT || 5000;
 const app = express();
-const port = process.env.PORT || 3000;
-
 // Apply middleware in the correct order
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-
 // Dynamic CORS configuration based on environment
-
-app.use(cors({
-  origin:process.env.FRONTEND_URL,
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
-
+cors(app as any);
 // Session configuration based on environment
-app.use(session({
-  name: 'pyp-session',
-  secret: process.env.SESSION_SECRET || 'zyafafafnafafnalfa',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    httpOnly: true,
-    // Only use 'secure: true' in production with HTTPS
-    secure:false,
-    // SameSite configuration appropriate for the environment
-    sameSite:'lax', // when it goes to to deployment convert to site
-    maxAge: 1000 * 60 * 60 * 24 // 1 day
-  }
-}));
-
-// Initialize passport
+app.use(passportSession);
 app.use(passport.initialize());
 app.use(passport.session());
-
 // Configure passport
 PassportConfguration();
-
-// Debug middleware to log authentication status
-app.use((req, res, next) => {
-  console.log(`Request path: ${req.path}, origin: ${req.headers.origin}, isAuthenticated: ${req.isAuthenticated()}`);
-  next();
-});
-
-// Home route
-app.get("/", (req: Request, res: Response) => {
-  res.send(`
-    <h1>Welcome to the PYP Backend</h1>
-    <p>Server is running successfully</p>
-  `);
-});
 // Apply routes
 app.use("/auths", router);
-// Add a catch-all route for debugging
-app.use((req: Request, res: Response) => {
-  res.status(404).json({
-    error: "Route not found",
-    path: req.path,
-    method: req.method,
-    origin: req.headers.origin
-  });
-});
-// Connect to MongoDB and start server
-app.listen(port, async () => {
-  try {
-    await MonogoDbConnection(process.env.MONGO_DB_URI!);
-    console.log("Connected to MongoDB");
-    console.log(`Server is running on port ${port}`);
-  } catch (err) {
-    console.log("Error in connecting to MongoDB", err);
-  }
-});
+HomeRoute(app);
+// Debugging route
+MiddlewareDebugger(app);
+// Listen to the port
+ListenPort(app, PORT as string);
+

@@ -1,6 +1,8 @@
 // User Model for MongoDB
 import mongoose, { Schema, Document } from "mongoose";
-
+// Define the User interface extending mongoose Document
+// This interface represents the structure of the User document in MongoDB
+// It includes properties like googleId, email, displayName, etc.
 export interface IUser extends Document {
   googleId: string;
   email: string;

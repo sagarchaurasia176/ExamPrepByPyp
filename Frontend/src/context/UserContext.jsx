@@ -32,9 +32,6 @@ export const UserProvider = ({ children }) => {
       const response = await axios.get(`${API_URL}/auths/profile`, {
         withCredentials: true,
       });
-
-      console.log("auths/profile response", response);
-
       if (response.data.success) {
         const userData = response.data.user;
         setUser(userData);

@@ -2,10 +2,9 @@
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import dotenv from "dotenv";
-import { UserModel } from "../../schema/Auth.Schema"; // Adjust path as needed
-
+import { UserModel } from "../schema/Auth.Schema"; // Adjust path as needed
 dotenv.config();
-
+// Initialize Google authentication 
 export const PassportConfguration = () => {
   // Serialize user info to store in session
   passport.serializeUser((user: any, done) => {
@@ -21,9 +20,8 @@ export const PassportConfguration = () => {
       done(error, null);
     }
   });
-
-  //yooo
-  // Configure Google Strategy
+  // Configure Google Strategy for Passport
+  // This strategy is used to authenticate users using Google OAuth 2.0
   passport.use(
     new GoogleStrategy(
       {
@@ -31,7 +29,6 @@ export const PassportConfguration = () => {
         clientSecret:process.env.GOOGLE_CLIENT_SECRET as string,
         callbackURL:process.env.GOOGLE_CALLBACK_URL as string,
       },
-      
       // Callback function to handle the response from Goog
       async (accessToken, refreshToken, profile, done) => {
         try {
