@@ -1,5 +1,5 @@
 import React from "react";
-import founder from "../../public/founder.png"; // Add your image in the img folder
+import founder from "../assets/founder.png"; // Add your image in the img folder
 
 const About = () => {
   return (

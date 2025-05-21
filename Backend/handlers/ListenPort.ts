@@ -7,7 +7,7 @@ dotenv.config();
 
 export const ListenPort = async(app:express.Express , port:string):Promise<void> => {
     try {
-        await MonogoDbConnection(process.env.MONGO_URI as string);
+        await MonogoDbConnection(process.env.MONGODB_URI as string);
         app.listen(port, () => {
             console.log(`Server is running on port ${port}`);
             console.log(`MongoDB connection established successfully`);    

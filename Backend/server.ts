@@ -15,7 +15,9 @@ import { ListenPort } from "./handlers/ListenPort";
 import { passportSession } from "./handlers/Session";
 import { MiddlewareDebugger } from "./handlers/DebugMiddleware";
 import { HomeRoute } from "./handlers/HomeRoute";
+import { CorsHandler } from "./handlers/CorsHandler";
 dotenv.config();
+
 const PORT = process.env.PORT || 5000;
 const app = express();
 // Apply middleware in the correct order
@@ -23,7 +25,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 // Dynamic CORS configuration based on environment
-cors(app as any);
+CorsHandler(app);
 // Session configuration based on environment
 app.use(passportSession);
 app.use(passport.initialize());
@@ -37,4 +39,6 @@ HomeRoute(app);
 MiddlewareDebugger(app);
 // Listen to the port
 ListenPort(app, PORT as string);
+
+
 

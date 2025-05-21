@@ -1,54 +1,12 @@
 import React from "react";
 import { motion } from "framer-motion";
 import Footer from "../Components/Footer";
+import { Branches } from "./Branch";
+import { semesters } from "./Semester";
+import { papers } from "./Paper";
+import { years } from "./Year";
 
 const UniversityPaper = () => {
-  // Mock data for papers - in a real application, this would come from an API
-  const papers = [
-    {
-      id: 1,
-      title: "Computer Science Fundamentals",
-      year: "2023",
-      subject: "Computer Science",
-      downloadLink: "#",
-    },
-    {
-      id: 2,
-      title: "Data Structures and Algorithms",
-      year: "2023",
-      subject: "Computer Science",
-      downloadLink: "#",
-    },
-    {
-      id: 3,
-      title: "Mathematics for Machine Learning",
-      year: "2023",
-      subject: "Mathematics",
-      downloadLink: "#",
-    },
-    {
-      id: 4,
-      title: "Physics Mechanics",
-      year: "2023",
-      subject: "Physics",
-      downloadLink: "#",
-    },
-    {
-      id: 5,
-      title: "Organic Chemistry",
-      year: "2023",
-      subject: "Chemistry",
-      downloadLink: "#",
-    },
-    {
-      id: 6,
-      title: "Molecular Biology",
-      year: "2023",
-      subject: "Biology",
-      downloadLink: "#",
-    },
-  ];
-
   return (
     <div className="bg-slate-950 min-h-screen">
       <div className="container mx-auto px-4 py-16 sm:px-6 md:px-8 lg:px-12 xl:px-16">
@@ -58,26 +16,40 @@ const UniversityPaper = () => {
           transition={{ duration: 0.5 }}
           className="text-center mb-12"
         >
-          <h1 className="text-4xl font-bold text-white mb-4">Question Papers</h1>
+          <h1 className="text-4xl font-bold text-white mb-4">
+            Question Papers
+          </h1>
           <p className="text-slate-300 text-lg max-w-2xl mx-auto">
-            Browse through our collection of previous year question papers to help you prepare effectively for your exams.
+            Browse through our collection of previous year question papers to
+            help you prepare effectively for your exams.
           </p>
         </motion.div>
 
         {/* Search and filter options could go here */}
         <div className="mb-8 flex flex-col sm:flex-row gap-4 justify-center">
-          <input
-            type="text"
-            placeholder="Search papers..."
-            className="px-4 py-2 rounded-lg bg-slate-800 text-black border border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
           <select className="px-4 py-2 rounded-lg bg-slate-800 text-black border border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-            <option value="">All Subjects</option>
-            <option value="cs">Computer Science</option>
-            <option value="math">Mathematics</option>
-            <option value="physics">Physics</option>
-            <option value="chemistry">Chemistry</option>
-            <option value="biology">Biology</option>
+            {Branches.map((branch) => (
+              <option key={branch.value} value={branch.value}>
+                {branch.label}
+              </option>
+            ))}
+          </select>
+          {/* semester  */}
+          <select className="px-4 py-2 rounded-lg bg-slate-800 text-black border border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            {semesters.map((sem) => (
+              <option key={sem.value} value={sem.value}>
+                {sem.label}
+              </option>
+            ))}
+          </select>
+
+          {/* Years */}
+          <select className="px-4 py-2 rounded-lg bg-slate-800 text-black border border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            {years.map((year) => (
+              <option key={year.value} value={year.value}>
+                {year.label}
+              </option>
+            ))}
           </select>
         </div>
 
@@ -93,7 +65,9 @@ const UniversityPaper = () => {
             >
               <div className="p-6">
                 <div className="flex justify-between items-start mb-4">
-                  <h3 className="text-xl font-semibold text-black">{paper.title}</h3>
+                  <h3 className="text-xl font-semibold text-black">
+                    {paper.title}
+                  </h3>
                   <span className="bg-indigo-600 text-xs text-black px-2 py-1 rounded-full">
                     {paper.year}
                   </span>
