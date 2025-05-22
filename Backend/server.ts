@@ -16,6 +16,7 @@ import { passportSession } from "./handlers/Session";
 import { MiddlewareDebugger } from "./handlers/DebugMiddleware";
 import { HomeRoute } from "./handlers/HomeRoute";
 import { CorsHandler } from "./handlers/CorsHandler";
+import { paper } from "./routes/Paper.routes";
 dotenv.config();
 
 const PORT = process.env.PORT || 5000;
@@ -32,8 +33,12 @@ app.use(passport.initialize());
 app.use(passport.session());
 // Configure passport
 PassportConfguration();
+
 // Apply routes
 app.use("/auths", router);
+app.use("/all/paper",paper);
+
+// Debugging route
 HomeRoute(app);
 // Debugging route
 MiddlewareDebugger(app);
