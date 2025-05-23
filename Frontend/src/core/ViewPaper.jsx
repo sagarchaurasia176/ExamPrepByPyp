@@ -1,14 +1,11 @@
 import React from "react";
 import { motion } from "framer-motion";
 import Footer from "../Components/Footer";
-import { Branches } from "./Branch";
-import { semesters } from "./Semester";
-import { papers } from "./Paper";
-import { years } from "./Year";
 
 const UniversityPaper = () => {
   return (
     <div className="bg-slate-950 min-h-screen">
+      
       <div className="container mx-auto px-4 py-16 sm:px-6 md:px-8 lg:px-12 xl:px-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -26,7 +23,7 @@ const UniversityPaper = () => {
         </motion.div>
 
         {/* Search and filter options could go here */}
-        <div className="mb-8 flex flex-col sm:flex-row gap-4 justify-center">
+        {/* <div className="mb-8 flex flex-col sm:flex-row gap-4 justify-center">
           <select className="px-4 py-2 rounded-lg bg-slate-800 text-black border border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
             {Branches.map((branch) => (
               <option key={branch.value} value={branch.value}>
@@ -51,10 +48,10 @@ const UniversityPaper = () => {
               </option>
             ))}
           </select>
-        </div>
+        {/* </div>  */}
 
         {/* Papers grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {papers.map((paper) => (
             <motion.div
               key={paper.id}
@@ -114,8 +111,11 @@ const UniversityPaper = () => {
               </div>
             </motion.div>
           ))}
-        </div>
+        </div> */}
       </div>
+
+
+
 
       <div className="bg-slate-950 w-full">
         <div className="mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-12">

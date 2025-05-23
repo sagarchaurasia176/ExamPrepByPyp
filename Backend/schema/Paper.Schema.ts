@@ -2,12 +2,13 @@ import mongoose from "mongoose";
 import { Document } from "mongoose";
 
 interface Paper extends Document {
-  title: string;
-  sem:String
-  year:String,
+  title: string,
+  sem:String,
+  branch:String,
   subject: string;
   fileurl: string;
 }
+
 //paper schema for different paper types with the dropbox url to fetch the paper
 const PaperSchema = new mongoose.Schema({
   title: {
@@ -18,7 +19,7 @@ const PaperSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  year: {
+  branch: {
     type: String,
     required: true,
   },
