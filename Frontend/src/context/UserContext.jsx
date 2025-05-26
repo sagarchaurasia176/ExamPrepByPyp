@@ -11,8 +11,6 @@ export const UserProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   let API_URL = import.meta.env.VITE_BACKEND_URL;
-  console.log("API_URL", API_URL);
-  
   
   useEffect(() => {
     const initializeAuth = async () => {

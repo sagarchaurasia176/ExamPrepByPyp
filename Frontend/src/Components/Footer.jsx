@@ -10,6 +10,8 @@ import { useRef } from 'react';
 import { useCallback } from 'react';
 import { useMemo } from 'react';
 import { useLayoutEffect } from 'react';
+import { BookOpen } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 
 const Footer = () => {  
@@ -37,19 +39,19 @@ const Footer = () => {
     navigate("/");
   };
   return (
-    <footer className="bg-slate-950 text-white py-4">
-      <div className="max-w-[1080px] mx-auto flex justify-between items-center">
-        <div className="flex items-center space-x-3">
-          <Link to="/" className="text-xl">
-            PYP | <b>Exam_Prep</b>
-          </Link>
+   <footer className="mt-2 border-t border-slate-800/50 pt-16 relative">
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 to-transparent"></div>
+      <div className="relative text-center">
+        <div className="flex justify-center items-center space-x-3 mb-6 group">
+          <div className="p-2 bg-indigo-500/20 rounded-lg group-hover:scale-110 transition-transform duration-300">
+            <BookOpen className="w-8 h-8 text-indigo-400 group-hover:text-indigo-300 transition-colors duration-300" />
+          </div>
+          <span className="text-2xl font-bold text-white font-inter group-hover:text-indigo-100 transition-colors duration-300">
+            PYP | Exam_Prep
+          </span>
         </div>
-
-        {/* Social Media Icons */}
+        <p className="text-slate-400  space-x-2 font-inter text-lg">© 2025 University Papers Platform. All rights reserved.</p>
        
-        <div className="text-sm text-gray-400">
-          &copy; {new Date().getFullYear()} PYP | Exam_Prep. All rights reserved.
-        </div>
       </div>
     </footer>
   );

@@ -47,4 +47,8 @@ h1{
   font-weight: 600;
   font-style: normal;
 }
+::-webkit-scrollbar {
+    width:0px;
+    background-color:bisque;
+}
 

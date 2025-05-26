@@ -15,16 +15,15 @@ import Testimonials from "../Components/Testimonials";
 import Footer from "../Components/Footer";
 import { useUser } from "../context/UserContext";
 import Avatar from "react-avatar";
-
-
-
+import UniversityTrackerCount from "../core/UniversityTrackerCount";
+import { BookOpen } from "lucide-react";
 // This is the Home component that serves as the landing page of the application.
 function Home() {
   const { isAuthenticated } = useUser();
   const navigate = useNavigate();
-  const API_URL="http://localhost:5000";
+  const API_URL = "http://localhost:5000";
 
-// Handle view papers button click
+  // Handle view papers button click
   const handleViewPapers = () => {
     if (isAuthenticated) {
       navigate("/papers");
@@ -125,8 +124,8 @@ function Home() {
                   ))}
                 </div>
                 <span className="text-zinc-100 text-center">
-                  <strong>1000</strong> Students Transformed. Yours Could
-                  Be Next!
+                  <strong>1000</strong> Students Transformed. Yours Could Be
+                  Next!
                 </span>
               </div>
             </motion.div>
@@ -152,6 +151,12 @@ function Home() {
             </motion.div>
           </div>
         </div>
+      </div>
+
+      {/*stats  */}
+      <div className=" container mx-auto px-6 mt-20 mb-20  ">
+        <UniversityTrackerCount/>
+        {/* <UniversityTrackerCount /> */}
       </div>
 
       {/* Features Section */}
