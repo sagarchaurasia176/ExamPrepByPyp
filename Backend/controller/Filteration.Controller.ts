@@ -40,7 +40,7 @@ export const filterPaper = async (req: Request, res: Response): Promise<any> => 
             return res.status(400).json({ message: "Please provide both semester and branch" });
         }
         // Find all papers that match semester and branch
-        const papersFiltered = await PaperModel.find({ sem, branch }).select("title fileurl");
+        const papersFiltered = await PaperModel.find({ sem, branch }).select("sem title fileurl branch");
         // Handle case when no papers found
         if (papersFiltered.length === 0) {
             return res.status(404).json({ message: "No papers found in the database" });
@@ -64,7 +64,6 @@ export const DropdownPaperFilters = async (req: Request, res: Response): Promise
     try {
         const branches = await PaperModel.distinct("branch");
         const semesters = await PaperModel.distinct("sem");
-
         return res.status(200).json({ branches, semesters });
     } catch (error) {
         console.error(error);
