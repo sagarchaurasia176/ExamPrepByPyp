@@ -1,0 +1,8 @@
+services:
+  server:
+    image: pyp-b:latest
+    container_name: pyp-paper-backend
+    env_file:
+      - .env
+    ports:  
+      - "5000:5000"
