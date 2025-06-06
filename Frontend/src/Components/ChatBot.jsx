@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, Bot, User, Loader, RefreshCw, AlertCircle, MessageCircle, X, Minimize2, Maximize2, Volume2, VolumeX, Copy, Check } from 'lucide-react';
+import { Send, Bot, User, Loader, RotateCcw, AlertCircle, MessageCircle, X, Minimize2, Maximize2, Copy, Check } from 'lucide-react';
 
 const ChatBot = () => {
   const [messages, setMessages] = useState([]);
@@ -8,14 +8,10 @@ const ChatBot = () => {
   const [error, setError] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
-  const [isTyping, setIsTyping] = useState(false);
-  const [soundEnabled, setSoundEnabled] = useState(true);
   const [copiedMessageId, setCopiedMessageId] = useState(null);
   const [showWelcome, setShowWelcome] = useState(true);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
-
-  const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || 'undefined';
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -30,30 +26,9 @@ const ChatBot = () => {
     }
   }, [messages, isOpen, isMinimized]);
 
-  // Auto-resize textarea
   const adjustTextareaHeight = (textarea) => {
     textarea.style.height = 'auto';
     textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
-  };
-
-  const playNotificationSound = () => {
-    if (soundEnabled) {
-      // Simple notification sound using Web Audio API
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-      
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-      
-      oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-      oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.1);
-      gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
-      
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 0.2);
-    }
   };
 
   const sendMessage = async () => {
@@ -69,31 +44,36 @@ const ChatBot = () => {
     setMessages(prev => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
-    setIsTyping(true);
     setError('');
     setShowWelcome(false);
 
-    // Auto-resize textarea back to single line
     if (inputRef.current) {
       inputRef.current.style.height = 'auto';
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/bot/student-query`, {
+      const response = await fetch("http://localhost:5000/bot/student-query", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          message: input.trim(),
+          userQuery: input.trim(),
         }),
       });
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
+      
+      // Debug: Log the actual response structure
+      console.log('API Response:', data);
+      
+      await new Promise(resolve => setTimeout(resolve, 800));
 
-      // Simulate typing delay for better UX
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
+      // Handle the response
       if (data.success && data.response) {
         const botMessage = {
           id: Date.now() + 1,
@@ -101,18 +81,25 @@ const ChatBot = () => {
           content: data.response,
           timestamp: new Date(),
         };
-
         setMessages(prev => [...prev, botMessage]);
-        playNotificationSound();
+      } else if (data.answer) {
+        // Fallback for current backend format
+        const botMessage = {
+          id: Date.now() + 1,
+          role: 'assistant',
+          content: data.answer,
+          timestamp: new Date(),
+        };
+        setMessages(prev => [...prev, botMessage]);
       } else {
-        setError(data.error || 'Failed to get response');
+        console.error('Unexpected response format:', data);
+        setError(data.error || 'Failed to get response from AI');
       }
     } catch (err) {
       console.error('Chat error:', err);
-      setError('Network error. Please check your connection and try again.');
+      setError(`Connection failed: ${err.message}`);
     } finally {
       setIsLoading(false);
-      setIsTyping(false);
     }
   };
 
@@ -182,77 +169,65 @@ const ChatBot = () => {
         <div className="fixed bottom-6 right-6 z-50">
           <button
             onClick={toggleChat}
-            className="group relative w-16 h-16 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-700 text-white rounded-full shadow-xl hover:shadow-2xl transform hover:scale-110 transition-all duration-300 flex items-center justify-center animate-pulse hover:animate-none"
-            title="Open AI Assistant"
+            className="group relative w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-600 text-black rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center"
+            title="PYP-Assistant"
           >
-            <MessageCircle className="w-7 h-7 transition-transform group-hover:scale-110" />
+            <MessageCircle className="w-6 h-6" />
             
-            {/* Floating notification badge */}
-            <div className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white text-xs rounded-full flex items-center justify-center animate-bounce">
-              AI
+            {/* Status indicator */}
+            <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white">
+              <div className="w-full h-full bg-green-400 rounded-full animate-ping"></div>
             </div>
             
-            {/* Tooltip */}
-            <div className="absolute -top-16 right-0 bg-gray-900 text-white px-4 py-2 rounded-lg text-sm opacity-0 group-hover:opacity-100 transition-all duration-200 whitespace-nowrap transform translate-y-2 group-hover:translate-y-0 pointer-events-none">
-              Chat with AI Assistant
-              <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+            {/* Hover tooltip */}
+            <div className="absolute bottom-full right-0 mb-2 bg-gray-900 text-white px-3 py-1.5 rounded-lg text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
+              Chat with AI
+              <div className="absolute top-full right-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
             </div>
-            
-            {/* Ripple effect */}
-            <div className="absolute inset-0 rounded-full bg-white opacity-20 scale-0 group-hover:scale-100 transition-transform duration-300"></div>
           </button>
         </div>
       )}
 
-      {/* Chat Popup */}
+      {/* Chat Window */}
       {isOpen && (
-        <div className={`fixed bottom-6 right-6 z-50 transition-all duration-500 ease-in-out transform ${
+        <div className={`fixed bottom-6 right-6 z-50 transition-all duration-300 ease-out ${
           isMinimized 
-            ? 'w-80 h-16 scale-95' 
-            : 'w-96 h-[650px] scale-100'
-        } ${isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-          <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col h-full overflow-hidden backdrop-blur-sm bg-white/95">
+            ? 'w-80 h-14' 
+            : 'w-96 h-[600px]'
+        }`}>
+          <div className="bg-slate-950 rounded-xl shadow-2xl border border-gray-200 flex flex-col h-full overflow-hidden">
+            
             {/* Header */}
-            <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-700 text-white p-4 flex items-center justify-between rounded-t-2xl">
+            <div className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white p-4 flex items-center justify-between rounded-t-xl">
               <div className="flex items-center space-x-3">
                 <div className="relative">
-                  <Bot className="w-7 h-7" />
-                  <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white animate-pulse"></div>
+                  <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                    <Bot className="w-5 h-5" />
+                  </div>
+                  <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
                 </div>
                 <div>
-                  <h1 className="text-lg font-bold">AI Assistant</h1>
+                  <h1 className=" text-indigo-100 text-md">PYP-AI-Assistant</h1>
                   {!isMinimized && (
-                    <p className="text-xs opacity-90 flex items-center">
-                      <span className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></span>
-                      Online • Ready to help
-                    </p>
+                    <p className="text-xs text-indigo-100">Always here to help</p>
                   )}
                 </div>
               </div>
               
               <div className="flex items-center space-x-1">
                 {!isMinimized && (
-                  <>
-                    <button
-                      onClick={() => setSoundEnabled(!soundEnabled)}
-                      className="p-2 bg-white/20 rounded-lg hover:bg-white/30 transition-all duration-200 transform hover:scale-105"
-                      title={soundEnabled ? 'Disable sound' : 'Enable sound'}
-                    >
-                      {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
-                    </button>
-                    <button
-                      onClick={clearChat}
-                      className="p-2 bg-white/20 rounded-lg hover:bg-white/30 transition-all duration-200 transform hover:scale-105"
-                      title="Clear chat"
-                    >
-                      <RefreshCw className="w-4 h-4" />
-                    </button>
-                  </>
+                  <button
+                    onClick={clearChat}
+                    className="p-1.5 hover:bg-white/20 rounded-lg transition-colors duration-200"
+                    title="Clear chat"
+                  >
+                    <RotateCcw className="w-4 h-4" />
+                  </button>
                 )}
                 
                 <button
                   onClick={isMinimized ? maximizeChat : minimizeChat}
-                  className="p-2 bg-white/20 rounded-lg hover:bg-white/30 transition-all duration-200 transform hover:scale-105"
+                  className="p-1.5 hover:bg-white/20 rounded-lg transition-colors duration-200"
                   title={isMinimized ? 'Maximize' : 'Minimize'}
                 >
                   {isMinimized ? <Maximize2 className="w-4 h-4" /> : <Minimize2 className="w-4 h-4" />}
@@ -260,7 +235,7 @@ const ChatBot = () => {
                 
                 <button
                   onClick={toggleChat}
-                  className="p-2 bg-white/20 rounded-lg hover:bg-white/30 transition-all duration-200 transform hover:scale-105"
+                  className="p-1.5 hover:bg-white/20 rounded-lg transition-colors duration-200"
                   title="Close chat"
                 >
                   <X className="w-4 h-4" />
@@ -271,31 +246,30 @@ const ChatBot = () => {
             {/* Chat Content */}
             {!isMinimized && (
               <>
-                {/* Messages */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-gray-50 to-white">
-                  {/* Welcome Message */}
+                {/* Messages Container */}
+                <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+                  
+                  {/* Welcome Screen */}
                   {showWelcome && messages.length === 0 && (
-                    <div className="text-center py-8 animate-fade-in">
-                      <div className="relative inline-block">
-                        <Bot className="w-16 h-16 mx-auto text-blue-500 mb-4" />
-                        <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white animate-ping"></div>
+                    <div className="text-center py-8">
+                      <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Bot className="w-8 h-8 text-white" />
                       </div>
-                      <h3 className="text-xl font-bold text-gray-800 mb-2">
-                        Welcome to AI Assistant! 👋
+                      <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                        Welcome! I'm your AI Assistant 👋
                       </h3>
-                      <p className="text-sm text-gray-600 mb-6 max-w-xs mx-auto">
-                        I'm here to help you with your studies, answer questions, and provide guidance on any topic.
+                      <p className="text-sm text-gray-600 mb-6 leading-relaxed">
+                        I'm here to help with your questions, provide explanations, and assist with your studies.
                       </p>
                       
-                      {/* Quick Reply Buttons */}
-                      <div className="space-y-2">
-                        <p className="text-xs text-gray-500 font-medium">Try asking:</p>
-                        <div className="flex flex-wrap gap-2 justify-center">
+                      <div className="space-y-3">
+                        <p className="text-xs text-gray-500 font-medium">Quick start:</p>
+                        <div className="grid grid-cols-1 gap-2">
                           {quickReplies.map((reply, index) => (
                             <button
                               key={index}
                               onClick={() => handleQuickReply(reply)}
-                              className="px-3 py-1.5 bg-blue-100 text-blue-700 rounded-full text-xs hover:bg-blue-200 transition-colors duration-200 transform hover:scale-105"
+                              className="px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-700 hover:bg-gray-50 hover:border-indigo-300 transition-all duration-200 hover:shadow-sm"
                             >
                               {reply}
                             </button>
@@ -306,39 +280,45 @@ const ChatBot = () => {
                   )}
 
                   {/* Messages */}
-                  {messages.map((message, index) => (
+                  {messages.map((message) => (
                     <div
                       key={message.id}
-                      className={`flex items-start space-x-3 animate-slide-in ${
-                        message.role === 'user' ? 'justify-end' : 'justify-start'
-                      }`}
-                      style={{ animationDelay: `${index * 0.1}s` }}
+                      className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                     >
-                      {message.role === 'assistant' && (
-                        <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
-                          <Bot className="w-4 h-4 text-white" />
+                      <div className={`flex max-w-xs lg:max-w-md ${message.role === 'user' ? 'flex-row-reverse' : 'flex-row'} space-x-2`}>
+                        
+                        {/* Avatar */}
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                          message.role === 'user' 
+                            ? 'bg-indigo-500 ml-2' 
+                            : 'bg-gray-300 mr-2'
+                        }`}>
+                          {message.role === 'user' ? (
+                            <User className="w-4 h-4 text-black" />
+                          ) : (
+                            <Bot className="w-4 h-4 text-gray-600" />
+                          )}
                         </div>
-                      )}
-                      
-                      <div className="group relative">
-                        <div
-                          className={`max-w-xs rounded-2xl p-4 shadow-md transition-all duration-200 hover:shadow-lg ${
+                        
+                        {/* Message Bubble */}
+                        <div className="group relative">
+                          <div className={`rounded-2xl px-4 py-3 shadow-sm ${
                             message.role === 'user'
-                              ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white ml-auto'
-                              : 'bg-white border border-gray-100 hover:border-gray-200'
-                          }`}
-                        >
-                          <p className="text-sm whitespace-pre-wrap break-words leading-relaxed">
-                            {message.content}
-                          </p>
-                          <div className="flex items-center justify-between mt-2">
-                            <p
-                              className={`text-xs ${
-                                message.role === 'user' ? 'text-blue-100' : 'text-gray-500'
-                              }`}
-                            >
-                              {formatTime(message.timestamp)}
+                              ? 'bg-indigo-500 text-white'
+                              : 'bg-slate-950  border border-gray-200'
+                          }`}>
+                            <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                              {message.content}
                             </p>
+                          </div>
+                          
+                          {/* Message meta */}
+                          <div className={`flex items-center mt-1 space-x-2 ${
+                            message.role === 'user' ? 'justify-end' : 'justify-start'
+                          }`}>
+                            <span className="text-xs text-gray-500">
+                              {formatTime(message.timestamp)}
+                            </span>
                             
                             {message.role === 'assistant' && (
                               <button
@@ -356,36 +336,34 @@ const ChatBot = () => {
                           </div>
                         </div>
                       </div>
-
-                      {message.role === 'user' && (
-                        <div className="w-8 h-8 bg-gradient-to-r from-gray-500 to-gray-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
-                          <User className="w-4 h-4 text-white" />
-                        </div>
-                      )}
                     </div>
                   ))}
 
                   {/* Typing Indicator */}
-                  {(isLoading || isTyping) && (
-                    <div className="flex items-start space-x-3 animate-fade-in">
-                      <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
-                        <Bot className="w-4 h-4 text-white" />
-                      </div>
-                      <div className="bg-white border border-gray-100 shadow-md rounded-2xl p-4 flex items-center space-x-3">
-                        <div className="flex space-x-1">
-                          <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
-                          <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                          <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                  {isLoading && (
+                    <div className="flex justify-start">
+                      <div className="flex space-x-2">
+                        <div className="w-8 h-8  bg-slate-900 rounded-full flex items-center justify-center flex-shrink-0">
+                          <Bot className="w-4 h-4  text-white" />
                         </div>
-                        <span className="text-sm text-gray-600">AI is thinking...</span>
+                        <div className="bg-slate-950 border border-gray-200 text-white rounded-2xl px-4 py-3 shadow-sm">
+                          <div className="flex items-center space-x-2">
+                            <div className="flex space-x-1">
+                              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                            </div>
+                            <span className="text-xs text-gray-500">Thinking...</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   )}
 
                   {/* Error Message */}
                   {error && (
-                    <div className="flex items-center space-x-3 p-4 bg-red-50 border border-red-200 rounded-2xl animate-shake">
-                      <AlertCircle className="w-5 h-5 flex-shrink-0 text-red-500" />
+                    <div className="flex items-center space-x-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+                      <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
                       <p className="text-sm text-red-700">{error}</p>
                     </div>
                   )}
@@ -394,7 +372,7 @@ const ChatBot = () => {
                 </div>
 
                 {/* Input Area */}
-                <div className="border-t  bg-slate-950  text-slate-700  p-4 rounded-b-2xl">
+                <div className="border-t border-gray-200 p-4 bg-slate-950 text-black rounded-b-xl">
                   <div className="flex space-x-3 items-end">
                     <div className="flex-1 relative">
                       <textarea
@@ -402,8 +380,8 @@ const ChatBot = () => {
                         value={input}
                         onChange={handleInputChange}
                         onKeyPress={handleKeyPress}
-                        placeholder="Type your message.."
-                        className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none transition-all duration-200 placeholder-gray-400"
+                        placeholder="Ask me anything..."
+                        className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none transition-all duration-200 placeholder-gray-400"
                         rows={1}
                         disabled={isLoading}
                         style={{ maxHeight: '120px' }}
@@ -412,7 +390,7 @@ const ChatBot = () => {
                     <button
                       onClick={sendMessage}
                       disabled={!input.trim() || isLoading}
-                      className="px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-black rounded-xl hover:from-blue-600 hover:to-purple-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center transform hover:scale-105 disabled:hover:scale-100 shadow-md hover:shadow-lg"
+                      className="px-4 py-3 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center transform hover:scale-105 disabled:hover:scale-100"
                     >
                       {isLoading ? (
                         <Loader className="w-5 h-5 animate-spin" />
@@ -427,44 +405,6 @@ const ChatBot = () => {
           </div>
         </div>
       )}
-
-      {/* Mobile Overlay */}
-      {isOpen && !isMinimized && (
-        <div 
-          className="fixed inset-0 bg-white bg-opacity-30 z-40 md:hidden backdrop-blur-sm transition-opacity duration-300"
-          onClick={minimizeChat}
-        />
-      )}
-
-      <style jsx>{`
-        @keyframes fade-in {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        
-        @keyframes slide-in {
-          from { opacity: 0; transform: translateX(20px); }
-          to { opacity: 1; transform: translateX(0); }
-        }
-        
-        @keyframes shake {
-          0%, 100% { transform: translateX(0); }
-          25% { transform: translateX(-5px); }
-          75% { transform: translateX(5px); }
-        }
-        
-        .animate-fade-in {
-          animation: fade-in 0.3s ease-out;
-        }
-        
-        .animate-slide-in {
-          animation: slide-in 0.4s ease-out;
-        }
-        
-        .animate-shake {
-          animation: shake 0.5s ease-in-out;
-        }
-      `}</style>
     </>
   );
 };
