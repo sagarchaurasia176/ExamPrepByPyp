@@ -17,6 +17,7 @@ import { useUser } from "../context/UserContext";
 import Avatar from "react-avatar";
 import UniversityTrackerCount from "../core/UniversityTrackerCount";
 import { BookOpen } from "lucide-react";
+import ChatBot from "../Components/ChatBot";
 // This is the Home component that serves as the landing page of the application.
 function Home() {
   const { isAuthenticated } = useUser();
@@ -198,6 +199,8 @@ function Home() {
         </div>
       </div>
 
+      {/* Chat bot components */}
+          <ChatBot/>
       {/* Sample Papers Section */}
       <div className="py-20 bg-gray-800/50">
         <div className="container mx-auto px-6">

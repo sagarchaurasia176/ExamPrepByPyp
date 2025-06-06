@@ -17,6 +17,7 @@ import { MiddlewareDebugger } from "./handlers/DebugMiddleware";
 import { HomeRoute } from "./handlers/HomeRoute";
 import { CorsHandler } from "./handlers/CorsHandler";
 import { paper } from "./routes/Paper.routes";
+import { botRouter } from "./routes/bot.routes";
 dotenv.config();
 
 const PORT = process.env.PORT || 5000;
@@ -37,6 +38,7 @@ PassportConfguration();
 // Apply routes
 app.use("/auths", router);
 app.use("/all/paper",paper);
+app.use('/bot',botRouter);
 
 // Debugging route
 HomeRoute(app);
