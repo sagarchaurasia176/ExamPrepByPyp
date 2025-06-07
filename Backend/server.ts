@@ -1,16 +1,11 @@
 // Import necessary modules
-import cors from "cors";
 import express from "express";
 import dotenv from "dotenv";
-import { Request, Response } from "express";
 import session from "express-session";
 import passport from "passport";
-import { MonogoDbConnection } from "./config/Dbconfig";
 import router from "./routes/auth.routes";
 import cookieParser from 'cookie-parser';
-import { log } from "console";
 import { PassportConfguration } from "./config/ConfigAuthWithGooglePassport";
-import { RouteDebugger } from "./handlers/RouteHandler";
 import { ListenPort } from "./handlers/ListenPort";
 import { passportSession } from "./handlers/Session";
 import { MiddlewareDebugger } from "./handlers/DebugMiddleware";
@@ -18,6 +13,8 @@ import { HomeRoute } from "./handlers/HomeRoute";
 import { CorsHandler } from "./handlers/CorsHandler";
 import { paper } from "./routes/Paper.routes";
 import { botRouter } from "./routes/bot.routes";
+import { DropboxMiddlewareConfigErrorHandler } from "./errors/DropboxMiddleware";
+
 dotenv.config();
 
 const PORT = process.env.PORT || 5000;
@@ -32,6 +29,7 @@ CorsHandler(app);
 app.use(passportSession);
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(DropboxMiddlewareConfigErrorHandler);
 // Configure passport
 PassportConfguration();
 

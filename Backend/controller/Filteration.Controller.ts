@@ -1,36 +1,5 @@
 import { PaperModel } from "../schema/Paper.Schema";
 import { Request, Response } from "express";
-
-// Function to post the paper 
-export const uploadPaper = async (req: Request, res: Response): Promise<any> => {
-    try {
-        let { title, sem, branch, subject, fileurl } = req.body;
-        // Check if all required fields are provided
-        if (!title || !sem || !branch || !subject || !fileurl) {
-            return res.status(400).json({ message: "Please provide all the required fields" });
-        }
-        // Create a new paper object
-        const paperUploadToDatabase = await PaperModel.create({
-            title,
-            sem,
-            branch,
-            subject,
-            fileurl
-        })
-        // Normalize branch to uppercase
-        branch = branch.toUpperCase();
-        // Save the paper to the database
-        await paperUploadToDatabase.save();
-        // Return the saved paper
-        return res.status(201).json({ paper: paperUploadToDatabase });
-        // Handle any errors that occur during the process
-    } catch (er) {
-        console.log(er);
-        res.status(500).json({ message: "Internal Server Error" });
-    }
-}
-
-// Function to filter papers based on semester and branch
 // This function retrieves papers from the database based on the provided semester and branch
 export const filterPaper = async (req: Request, res: Response): Promise<any> => {
     try {
@@ -54,11 +23,7 @@ export const filterPaper = async (req: Request, res: Response): Promise<any> => 
         res.status(500).json({ message: "Internal Server Error" });
     }
 };
-
-
-
 // Function to get filtered papers based on semester and branch
-// This function retrieves papers from the database based on the provided semester and branch
 // 👉 Get unique branches and semesters
 export const DropdownPaperFilters = async (req: Request, res: Response): Promise<any> => {
     try {
@@ -70,8 +35,6 @@ export const DropdownPaperFilters = async (req: Request, res: Response): Promise
         return res.status(500).json({ message: "Failed to fetch filters" });
     }
 };
-
-
 
 // get showcase all the papers
 export const getAllPapers = async (req: Request, res: Response): Promise<any> => {
