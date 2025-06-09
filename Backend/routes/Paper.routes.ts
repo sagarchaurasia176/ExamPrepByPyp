@@ -4,9 +4,11 @@ import { DropboxMiddleware } from '../middlewares/DropBoxServer.middleware';
 import { upload } from '../utils/DropboxWithMulterConfig';
 // import { uploadPaperViaForm } from '../controller/PaperUploaderViaForm.Controller';
 import { uploadPaper } from '../controller/PaperUploaderViaForm.Controller';
+import { DropboxAccessTokenHandler } from '../controller/DropboxAccessTokenHandler.Controller';
 
-export const paper = express.Router();
 // Route to upload a paper
+export const paper = express.Router();
+//Dropdown filters for paper - routes
 paper.post('/upload', DropboxMiddleware,uploadPaper);
 //get all papers
 paper.get('/view',getAllPapers);
@@ -15,10 +17,8 @@ paper.get('/filter',filterPaper) // Filter papers based on semester and branch
 // Route to get all papers
 paper.get('/paper-filters', DropdownPaperFilters);
 
-//Dropdown filters for paper - routes
-// paper.post('/file-upload' , DropboxMiddleware,uploadPaperViaForm);
-
-
+// Route to check the dropbox connection
+paper.get('/oauth2/callback' , DropboxAccessTokenHandler)
 
 
 

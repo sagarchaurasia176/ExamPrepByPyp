@@ -5,7 +5,6 @@ import multer from 'multer';
 
 // Import the multer configuration for file upload
 export const DropboxMiddlewareConfigErrorHandler=(error:any,req:Request,res:Response,next:NextFunction):void=>{
-    console.error("Error in DropboxMiddleware:", error);
     try{
         if(error instanceof multer.MulterError){
             if(error.code === 'LIMIT_FILE_SIZE'){
