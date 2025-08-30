@@ -6,14 +6,12 @@ import { useUser } from '../context/UserContext';
 function AuthCallback() {
   const { login } = useUser();
   const navigate = useNavigate();
-  
-  const API_URL="http://localhost:5000";
-  
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         // Get user data after successful authentication
-        const response = await axios.get(`${API_URL}/auths/profile`, {
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/auths/profile`, {
           withCredentials: true,
         }); 
         
