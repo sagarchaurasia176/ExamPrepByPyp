@@ -17,7 +17,7 @@ paper.get('/filter',filterPaper) // Filter papers based on semester and branch
 // Route to get all papers
 paper.get('/paper-filters', DropdownPaperFilters);
 
-// Route to check the dropbox connection
+// Route to check the dropbox connection - used this in dropbox for auth token purpose !
 paper.get('/oauth2/callback' , DropboxAccessTokenHandler)
 
 

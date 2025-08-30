@@ -5,7 +5,7 @@ import { PaperModel } from "../schema/Paper.Schema";
 export const uploadPaper = async (req: Request, res: Response): Promise<any> => {
   try {
     const { title, sem, branch, subject } = req.body;
-    const file = req.file;
+    const file = req.file; //folder request by the user
 
     // Step 1: Validate all inputs
     if (!title || !sem || !branch || !subject || !file) {
@@ -25,7 +25,7 @@ export const uploadPaper = async (req: Request, res: Response): Promise<any> => 
     });
     const rawUrl = sharedLink.result.url;
     const urlObj = new URL(rawUrl);
-    urlObj.searchParams.set("dl", "1");
+    urlObj.searchParams.set("dl", "1"); // modify the link to direct download
 
     const fileUrl = urlObj.toString(); // Direct download link
     if (!fileUrl) {
