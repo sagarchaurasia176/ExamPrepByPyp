@@ -13,7 +13,7 @@ function AuthCallback() {
       try {
         // Get user data after successful authentication
         const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/auths/profile`, {
-          withCredentials: true,
+         withCredentials:true
         }); 
         
         if (response.data.success) {
