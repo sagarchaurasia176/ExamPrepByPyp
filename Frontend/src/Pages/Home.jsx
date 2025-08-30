@@ -22,8 +22,7 @@ import ChatBot from "../Components/ChatBot";
 function Home() {
   const { isAuthenticated } = useUser();
   const navigate = useNavigate();
-  const API_URL = "http://localhost:5000";
-
+  const API_URL = import.meta.env.VITE_BACKEND_URL;
   // Handle view papers button click
   const handleViewPapers = () => {
     if (isAuthenticated) {
