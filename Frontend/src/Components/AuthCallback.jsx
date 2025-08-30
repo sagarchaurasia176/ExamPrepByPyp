@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useUser } from '../context/UserContext';
 
+// redirect checks
 function AuthCallback() {
   const { login } = useUser();
   const navigate = useNavigate();
