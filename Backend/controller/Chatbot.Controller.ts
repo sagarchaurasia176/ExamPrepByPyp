@@ -25,10 +25,10 @@ export const StudentQueryResolver = async (
 
     // Enhanced prompt for better chat responses
     const enhancedQuery = `
-You're a smart, friendly assistant helping students master their exams with confidence. 
-Give a short (under 50 words), clear, and motivating answer using simple language. 
-Question: ${userQuery.trim()}
-`;
+      You're a smart, friendly assistant helping students master their exams with confidence. 
+      Give a short (under 50 words), clear, and motivating answer using simple language. 
+      Question: ${userQuery.trim()}
+      `;
 
     const postData = {
       contents: [
