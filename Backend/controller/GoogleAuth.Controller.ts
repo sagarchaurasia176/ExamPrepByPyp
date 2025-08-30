@@ -8,7 +8,7 @@ export const googleLogin = (req: Request, res: Response , next:NextFunction) => 
 };  
 // Callback function for Google authentication
 export const googleCallback = (req: Request, res: Response) => {
-  const frontendUrl=process.env.FRONTEND_URL as string;// problem resolved 
+  const frontendUrl=process.env.FRONTEND_URL! as string;// problem resolved 
   res.redirect(`${frontendUrl}/auth/success`);
 }
 //get the user profile
@@ -33,5 +33,5 @@ export const isAuthenticated = (req: Request, res: Response, next: NextFunction)
   if (req.isAuthenticated()) {
     return next();
   }
-  res.status(401).json({ success: false, message: "Unauthorized" });
+  res.status(401).json({ success: false, message: "Unauthorized  " });
 };
