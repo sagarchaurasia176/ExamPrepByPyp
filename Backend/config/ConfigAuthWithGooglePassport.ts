@@ -49,6 +49,7 @@ export const PassportConfguration = () => {
           
           return done(null, user);
         } catch (error) {
+          console.error("error from passport serializer in backend !")
           return done(error as Error, undefined);
         }
       }
