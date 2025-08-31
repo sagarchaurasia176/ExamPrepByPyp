@@ -77,25 +77,15 @@ const ChatBot = () => {
           },
         }
       );
-
-      // const response = await fetch("http://localhost:5000/bot/student-query", {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify({
-      //     userQuery: input.trim(),
-      //   }),
-      // });
-
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
-
       // Debug: Log the actual response structure
-      console.log("API Response:", data);
+      console.log("AI Response");
+
+      console.log(data);
 
       await new Promise((resolve) => setTimeout(resolve, 800));
 
