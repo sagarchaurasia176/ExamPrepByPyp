@@ -1,11 +1,25 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Send, Bot, User, Loader, RotateCcw, AlertCircle, MessageCircle, X, Minimize2, Maximize2, Copy, Check } from 'lucide-react';
+import React, { useState, useEffect, useRef } from "react";
+import {
+  Send,
+  Bot,
+  User,
+  Loader,
+  RotateCcw,
+  AlertCircle,
+  MessageCircle,
+  X,
+  Minimize2,
+  Maximize2,
+  Copy,
+  Check,
+} from "lucide-react";
+import axios from "axios";
 
 const ChatBot = () => {
   const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [copiedMessageId, setCopiedMessageId] = useState(null);
@@ -14,7 +28,7 @@ const ChatBot = () => {
   const inputRef = useRef(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
@@ -27,8 +41,8 @@ const ChatBot = () => {
   }, [messages, isOpen, isMinimized]);
 
   const adjustTextareaHeight = (textarea) => {
-    textarea.style.height = 'auto';
-    textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
+    textarea.style.height = "auto";
+    textarea.style.height = Math.min(textarea.scrollHeight, 120) + "px";
   };
 
   const sendMessage = async () => {
@@ -36,67 +50,79 @@ const ChatBot = () => {
 
     const userMessage = {
       id: Date.now(),
-      role: 'user',
+      role: "user",
       content: input.trim(),
       timestamp: new Date(),
     };
 
-    setMessages(prev => [...prev, userMessage]);
-    setInput('');
+    setMessages((prev) => [...prev, userMessage]);
+    setInput("");
     setIsLoading(true);
-    setError('');
+    setError("");
     setShowWelcome(false);
 
     if (inputRef.current) {
-      inputRef.current.style.height = 'auto';
+      inputRef.current.style.height = "auto";
     }
-
+    // bot/student-query
     try {
-      const response = await fetch("http://localhost:5000/bot/student-query", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      const response = await axios.post(
+        import.meta.env.VITE_BACKEND_URL + "/bot/student-query",
+        {
           userQuery: input.trim(),
-        }),
-      });
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // const response = await fetch("http://localhost:5000/bot/student-query", {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify({
+      //     userQuery: input.trim(),
+      //   }),
+      // });
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
-      
+
       // Debug: Log the actual response structure
-      console.log('API Response:', data);
-      
-      await new Promise(resolve => setTimeout(resolve, 800));
+      console.log("API Response:", data);
+
+      await new Promise((resolve) => setTimeout(resolve, 800));
 
       // Handle the response
       if (data.success && data.response) {
         const botMessage = {
           id: Date.now() + 1,
-          role: 'assistant',
+          role: "assistant",
           content: data.response,
           timestamp: new Date(),
         };
-        setMessages(prev => [...prev, botMessage]);
+        setMessages((prev) => [...prev, botMessage]);
       } else if (data.answer) {
         // Fallback for current backend format
         const botMessage = {
           id: Date.now() + 1,
-          role: 'assistant',
+          role: "assistant",
           content: data.answer,
           timestamp: new Date(),
         };
-        setMessages(prev => [...prev, botMessage]);
+        setMessages((prev) => [...prev, botMessage]);
       } else {
-        console.error('Unexpected response format:', data);
-        setError(data.error || 'Failed to get response from AI');
+        console.error("Unexpected response format:", data);
+        setError(data.error || "Failed to get response from AI");
       }
     } catch (err) {
-      console.error('Chat error:', err);
+      console.error("Chat error:", err);
       setError(`Connection failed: ${err.message}`);
     } finally {
       setIsLoading(false);
@@ -105,12 +131,12 @@ const ChatBot = () => {
 
   const clearChat = () => {
     setMessages([]);
-    setError('');
+    setError("");
     setShowWelcome(true);
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
     }
@@ -127,12 +153,12 @@ const ChatBot = () => {
       setCopiedMessageId(messageId);
       setTimeout(() => setCopiedMessageId(null), 2000);
     } catch (err) {
-      console.error('Failed to copy message:', err);
+      console.error("Failed to copy message:", err);
     }
   };
 
   const formatTime = (date) => {
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   };
 
   const toggleChat = () => {
@@ -152,7 +178,7 @@ const ChatBot = () => {
     "How can you help me?",
     "What subjects can you assist with?",
     "Give me study tips",
-    "Explain a concept"
+    "Explain a concept",
   ];
 
   const handleQuickReply = (reply) => {
@@ -173,12 +199,12 @@ const ChatBot = () => {
             title="PYP-Assistant"
           >
             <MessageCircle className="w-10 h-10 text-white  bg-white/20 rounded-full p-1" />
-            
+
             {/* Status indicator */}
             <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white">
               <div className="w-full h-full bg-green-400 rounded-full animate-ping"></div>
             </div>
-            
+
             {/* Hover tooltip */}
             <div className="absolute bottom-full right-0 mb-2 bg-gray-900 text-white px-3 py-1.5 rounded-lg text-sm animate-bounce whitespace-nowrap z-50  ">
               Chat with AI
@@ -190,13 +216,12 @@ const ChatBot = () => {
 
       {/* Chat Window */}
       {isOpen && (
-        <div className={`fixed bottom-6 right-6 z-50 transition-all duration-300 ease-out ${
-          isMinimized 
-            ? 'w-80 h-14' 
-            : 'w-96 h-[600px]'
-        }`}>
+        <div
+          className={`fixed bottom-6 right-6 z-50 transition-all duration-300 ease-out ${
+            isMinimized ? "w-80 h-14" : "w-96 h-[600px]"
+          }`}
+        >
           <div className="bg-slate-950 rounded-xl shadow-2xl border border-gray-200 flex flex-col h-full overflow-hidden">
-            
             {/* Header */}
             <div className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white p-4 flex items-center justify-between rounded-t-xl">
               <div className="flex items-center space-x-3">
@@ -207,13 +232,17 @@ const ChatBot = () => {
                   <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
                 </div>
                 <div>
-                  <h1 className=" text-indigo-100 text-md">Learn In XR (AI-Assistant)</h1>
+                  <h1 className=" text-indigo-100 text-md">
+                    Learn In XR (AI-Assistant)
+                  </h1>
                   {!isMinimized && (
-                    <p className="text-xs text-indigo-100">Always here to help</p>
+                    <p className="text-xs text-indigo-100">
+                      Always here to help
+                    </p>
                   )}
                 </div>
               </div>
-              
+
               <div className="flex items-center space-x-1">
                 {!isMinimized && (
                   <button
@@ -224,15 +253,19 @@ const ChatBot = () => {
                     <RotateCcw className="w-4 h-4" />
                   </button>
                 )}
-                
+
                 <button
                   onClick={isMinimized ? maximizeChat : minimizeChat}
                   className="p-1.5 hover:bg-white/20 rounded-lg transition-colors duration-200"
-                  title={isMinimized ? 'Maximize' : 'Minimize'}
+                  title={isMinimized ? "Maximize" : "Minimize"}
                 >
-                  {isMinimized ? <Maximize2 className="w-4 h-4" /> : <Minimize2 className="w-4 h-4" />}
+                  {isMinimized ? (
+                    <Maximize2 className="w-4 h-4" />
+                  ) : (
+                    <Minimize2 className="w-4 h-4" />
+                  )}
                 </button>
-                
+
                 <button
                   onClick={toggleChat}
                   className="p-1.5 hover:bg-white/20 rounded-lg transition-colors duration-200"
@@ -248,7 +281,6 @@ const ChatBot = () => {
               <>
                 {/* Messages Container */}
                 <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
-                  
                   {/* Welcome Screen */}
                   {showWelcome && messages.length === 0 && (
                     <div className="text-center py-8">
@@ -259,11 +291,15 @@ const ChatBot = () => {
                         Welcome! I'm your AI Assistant 👋
                       </h3>
                       <p className="text-sm font-semibold text-gray-600 mb-6 leading-relaxed">
-                      Hi! I’m your guide on Learn In XR — here to assist with questions, explain tough topics, and take your learning to the next level with immersive experiences
+                        Hi! I’m your guide on Learn In XR — here to assist with
+                        questions, explain tough topics, and take your learning
+                        to the next level with immersive experiences
                       </p>
-                      
+
                       <div className="space-y-3">
-                        <p className="text-xs text-gray-500 font-medium">Quick start:</p>
+                        <p className="text-xs text-gray-500 font-medium">
+                          Quick start:
+                        </p>
                         <div className="grid grid-cols-1 gap-2">
                           {quickReplies.map((reply, index) => (
                             <button
@@ -283,46 +319,65 @@ const ChatBot = () => {
                   {messages.map((message) => (
                     <div
                       key={message.id}
-                      className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                      className={`flex ${
+                        message.role === "user"
+                          ? "justify-end"
+                          : "justify-start"
+                      }`}
                     >
-                      <div className={`flex max-w-xs lg:max-w-md ${message.role === 'user' ? 'flex-row-reverse' : 'flex-row'} space-x-2`}>
-                        
+                      <div
+                        className={`flex max-w-xs lg:max-w-md ${
+                          message.role === "user"
+                            ? "flex-row-reverse"
+                            : "flex-row"
+                        } space-x-2`}
+                      >
                         {/* Avatar */}
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                          message.role === 'user' 
-                            ? 'bg-indigo-500 ml-2' 
-                            : 'bg-gray-300 mr-2'
-                        }`}>
-                          {message.role === 'user' ? (
+                        <div
+                          className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                            message.role === "user"
+                              ? "bg-indigo-500 ml-2"
+                              : "bg-gray-300 mr-2"
+                          }`}
+                        >
+                          {message.role === "user" ? (
                             <User className="w-4 h-4 text-black" />
                           ) : (
                             <Bot className="w-4 h-4 text-gray-600" />
                           )}
                         </div>
-                        
+
                         {/* Message Bubble */}
                         <div className="group relative">
-                          <div className={`rounded-2xl px-4 py-3 shadow-sm ${
-                            message.role === 'user'
-                              ? 'bg-indigo-500 text-white'
-                              : 'bg-slate-950  border border-gray-200'
-                          }`}>
+                          <div
+                            className={`rounded-2xl px-4 py-3 shadow-sm ${
+                              message.role === "user"
+                                ? "bg-indigo-500 text-white"
+                                : "bg-slate-950  border border-gray-200"
+                            }`}
+                          >
                             <p className="text-sm leading-relaxed whitespace-pre-wrap">
                               {message.content}
                             </p>
                           </div>
-                          
+
                           {/* Message meta */}
-                          <div className={`flex items-center mt-1 space-x-2 ${
-                            message.role === 'user' ? 'justify-end' : 'justify-start'
-                          }`}>
+                          <div
+                            className={`flex items-center mt-1 space-x-2 ${
+                              message.role === "user"
+                                ? "justify-end"
+                                : "justify-start"
+                            }`}
+                          >
                             <span className="text-xs text-gray-500">
                               {formatTime(message.timestamp)}
                             </span>
-                            
-                            {message.role === 'assistant' && (
+
+                            {message.role === "assistant" && (
                               <button
-                                onClick={() => copyMessage(message.id, message.content)}
+                                onClick={() =>
+                                  copyMessage(message.id, message.content)
+                                }
                                 className="opacity-0 group-hover:opacity-100 p-1 hover:bg-gray-100 rounded transition-all duration-200"
                                 title="Copy message"
                               >
@@ -350,10 +405,18 @@ const ChatBot = () => {
                           <div className="flex items-center space-x-2">
                             <div className="flex space-x-1">
                               <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                              <div
+                                className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                                style={{ animationDelay: "0.1s" }}
+                              ></div>
+                              <div
+                                className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                                style={{ animationDelay: "0.2s" }}
+                              ></div>
                             </div>
-                            <span className="text-xs text-gray-500">Thinking...</span>
+                            <span className="text-xs text-gray-500">
+                              Thinking...
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -384,7 +447,7 @@ const ChatBot = () => {
                         className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none transition-all duration-200 placeholder-gray-400"
                         rows={1}
                         disabled={isLoading}
-                        style={{ maxHeight: '120px' }}
+                        style={{ maxHeight: "120px" }}
                       />
                     </div>
                     <button

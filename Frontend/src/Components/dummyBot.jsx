@@ -67,8 +67,7 @@ const ChatBot = () => {
 
     // const response = await axios.post("http://localhost:5000/bot/student-query", {
     try {
-      const response = await axios.post(
-        "http://localhost:5000/bot/student-query",
+      const response = await axios.post(  import.meta.env.VITE_BACKEND_URL+"/bot/student-query",
         {
           userQuery: input.trim(),
         },
