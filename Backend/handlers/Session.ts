@@ -2,6 +2,8 @@ import session from "express-session";
 import dotenv from "dotenv";
 dotenv.config();
 
+
+// For localhoost it works , but in the production it not work's
 export const passportSession = session({
   name: "pyp-session",
   secret: process.env.SESSION_SECRET || "fallback_secret",
