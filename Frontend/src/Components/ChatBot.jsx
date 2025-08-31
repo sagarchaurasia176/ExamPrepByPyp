@@ -64,53 +64,32 @@ const ChatBot = () => {
     if (inputRef.current) {
       inputRef.current.style.height = "auto";
     }
-    // bot/student-query
+
     try {
       const response = await axios.post(
         import.meta.env.VITE_BACKEND_URL + "/bot/student-query",
-        {
-          userQuery: input.trim(),
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        { userQuery: input.trim() },
+        { headers: { "Content-Type": "application/json" } }
       );
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
 
-      const data = await response.json();
-      // Debug: Log the actual response structure
-      console.log("AI Response");
-
-      console.log(data);
+      const data = response.data;
+      console.log("AI Response:", data);
 
       await new Promise((resolve) => setTimeout(resolve, 800));
 
-      // Handle the response
-      if (data.success && data.response) {
-        const botMessage = {
-          id: Date.now() + 1,
-          role: "assistant",
-          content: data.response,
-          timestamp: new Date(),
-        };
-        setMessages((prev) => [...prev, botMessage]);
-      } else if (data.answer) {
-        // Fallback for current backend format
-        const botMessage = {
-          id: Date.now() + 1,
-          role: "assistant",
-          content: data.answer,
-          timestamp: new Date(),
-        };
-        setMessages((prev) => [...prev, botMessage]);
-      } else {
-        console.error("Unexpected response format:", data);
-        setError(data.error || "Failed to get response from AI");
-      }
+      // Always pick something to display
+      const botMessage = {
+        id: Date.now() + 1,
+        role: "assistant",
+        content:
+          data.response ||
+          data.answer ||
+          data.message ||
+          JSON.stringify(data),
+        timestamp: new Date(),
+      };
+
+      setMessages((prev) => [...prev, botMessage]);
     } catch (err) {
       console.error("Chat error:", err);
       setError(`Connection failed: ${err.message}`);
@@ -190,13 +169,11 @@ const ChatBot = () => {
           >
             <MessageCircle className="w-10 h-10 text-white  bg-white/20 rounded-full p-1" />
 
-            {/* Status indicator */}
             <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white">
               <div className="w-full h-full bg-green-400 rounded-full animate-ping"></div>
             </div>
 
-            {/* Hover tooltip */}
-            <div className="absolute bottom-full right-0 mb-2 bg-gray-900 text-white px-3 py-1.5 rounded-lg text-sm animate-bounce whitespace-nowrap z-50  ">
+            <div className="absolute bottom-full right-0 mb-2 bg-gray-900 text-white px-3 py-1.5 rounded-lg text-sm animate-bounce whitespace-nowrap z-50">
               Chat with AI
               <div className="absolute top-full right-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
             </div>
@@ -226,9 +203,7 @@ const ChatBot = () => {
                     Learn In XR (AI-Assistant)
                   </h1>
                   {!isMinimized && (
-                    <p className="text-xs text-indigo-100">
-                      Always here to help
-                    </p>
+                    <p className="text-xs text-indigo-100">Always here to help</p>
                   )}
                 </div>
               </div>
@@ -269,9 +244,7 @@ const ChatBot = () => {
             {/* Chat Content */}
             {!isMinimized && (
               <>
-                {/* Messages Container */}
                 <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
-                  {/* Welcome Screen */}
                   {showWelcome && messages.length === 0 && (
                     <div className="text-center py-8">
                       <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -305,14 +278,11 @@ const ChatBot = () => {
                     </div>
                   )}
 
-                  {/* Messages */}
                   {messages.map((message) => (
                     <div
                       key={message.id}
                       className={`flex ${
-                        message.role === "user"
-                          ? "justify-end"
-                          : "justify-start"
+                        message.role === "user" ? "justify-end" : "justify-start"
                       }`}
                     >
                       <div
@@ -322,7 +292,6 @@ const ChatBot = () => {
                             : "flex-row"
                         } space-x-2`}
                       >
-                        {/* Avatar */}
                         <div
                           className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
                             message.role === "user"
@@ -337,13 +306,12 @@ const ChatBot = () => {
                           )}
                         </div>
 
-                        {/* Message Bubble */}
                         <div className="group relative">
                           <div
                             className={`rounded-2xl px-4 py-3 shadow-sm ${
                               message.role === "user"
                                 ? "bg-indigo-500 text-white"
-                                : "bg-slate-950  border border-gray-200"
+                                : "bg-slate-950 border border-gray-200 text-white"
                             }`}
                           >
                             <p className="text-sm leading-relaxed whitespace-pre-wrap">
@@ -351,7 +319,6 @@ const ChatBot = () => {
                             </p>
                           </div>
 
-                          {/* Message meta */}
                           <div
                             className={`flex items-center mt-1 space-x-2 ${
                               message.role === "user"
@@ -384,7 +351,6 @@ const ChatBot = () => {
                     </div>
                   ))}
 
-                  {/* Typing Indicator */}
                   {isLoading && (
                     <div className="flex justify-start">
                       <div className="flex space-x-2">
@@ -413,7 +379,6 @@ const ChatBot = () => {
                     </div>
                   )}
 
-                  {/* Error Message */}
                   {error && (
                     <div className="flex items-center space-x-3 p-3 bg-red-50 border border-red-200 rounded-lg">
                       <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
@@ -424,7 +389,6 @@ const ChatBot = () => {
                   <div ref={messagesEndRef} />
                 </div>
 
-                {/* Input Area */}
                 <div className="border-t border-gray-200 p-4 bg-slate-950 text-black rounded-b-xl">
                   <div className="flex space-x-3 items-end">
                     <div className="flex-1 relative">
