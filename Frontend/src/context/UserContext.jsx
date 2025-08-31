@@ -28,6 +28,7 @@ export const UserProvider = ({ children }) => {
   const checkAuthStatus = async () => {
     try {
       const response = await axios.get(`${API_URL}/auths/profile`, {
+        
         withCredentials: true,
       });
       if (response.data.success) {

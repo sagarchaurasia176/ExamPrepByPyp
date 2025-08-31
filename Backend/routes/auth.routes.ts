@@ -4,7 +4,7 @@ import { googleLogin, googleCallback, profile, logout, isAuthenticated } from ".
 
 const router = express.Router();
 
-router.get("/auth/google",
+router.get("/auth/google",  
   googleLogin,
   passport.authenticate("google", { scope: ["profile", "email"] }) //creadte a new user
 );
@@ -23,7 +23,9 @@ router.get("/auth/status", (req, res) => {
 });
 
 // Apply isAuthenticated middleware to protect the profile route
+console.log("proflile , middleware works ")
 router.get("/profile", isAuthenticated, profile);
+
 router.get("/logout", logout);
 
 export default router;

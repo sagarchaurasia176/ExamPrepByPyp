@@ -9,7 +9,7 @@ export const passportSession = session({
   saveUninitialized: false,
   cookie: {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production", // only secure in prod
+    secure: process.env.NODE_ENV=="development", // only secure in prod
     sameSite: "none", // required for cross-site cookies
     maxAge: 1000 * 60 * 60 * 24, // 1 day
   },
